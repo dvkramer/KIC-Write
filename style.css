@@ -1,178 +1,290 @@
 /*
  * style.css
- * Styling for Kramer Intelligent Cloud Write
- * Focuses on branding, responsive design, and modern aesthetics.
+ * Kramer Intelligent Cloud Write - Dark Theme & Modern UI Overhaul
  */
 
-/* Google Fonts Import - Using Lato and Open Sans as examples */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Lato:wght@400;700;900&display=swap');
+/* Google Fonts Import - Inter for UI, Fira Code for Editor */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
 
-/* CSS Variables for Branding - Easy to update later */
+/* --- Dark Theme Color Palette & Variables --- */
 :root {
-    --primary-font: 'Open Sans', sans-serif;
-    --heading-font: 'Lato', sans-serif;
-    --primary-color: #007bff; /* A modern blue - can be adjusted */
-    --secondary-color: #0056b3; /* Darker blue for hover/active states */
-    --light-gray-color: #f8f9fa; /* Light background for sections */
-    --medium-gray-color: #e9ecef; /* Borders and dividers */
-    --dark-gray-color: #343a40;  /* Header text, potentially other dark elements */
-    --text-color: #212529; /* Main body text */
-    --white-color: #ffffff;
-    --max-page-width: 1200px; /* Maximum width for the content area */
-    --border-radius: 5px; /* Consistent border radius */
+    /* Core Dark Theme */
+    --bg-main: #1A1B1E; /* Overall page background - very dark gray/blue */
+    --bg-card: #25262B; /* Background for the main app card - slightly lighter */
+    --bg-editor: #2E2E33; /* Editor background - distinct from card */
+
+    --text-primary: #E9ECEF; /* Primary text color - light gray */
+    --text-secondary: #A0AEC0; /* Secondary text - placeholder, tagline */
+    --text-disabled: #718096; /* Disabled text */
+
+    /* Accents & Interactive Elements */
+    --accent-primary: #007BFF; /* Bright blue for primary actions, highlights - can be tweaked */
+    --accent-primary-hover: #0056b3;
+    --accent-secondary: #39A0ED; /* Lighter blue or different accent for secondary actions */
+    --accent-secondary-hover: #2C7BBF;
+
+    --border-color: #4A4A4F; /* Borders for elements, inputs */
+    --border-color-subtle: #3A3B3F; /* More subtle borders or dividers */
+    --shadow-color: rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+
+    /* Typography */
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-editor: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', monospace;
+    --font-size-base: 16px;
+    --line-height-base: 1.6;
+
+    /* UI Elements */
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --padding-small: 8px;
+    --padding-medium: 16px;
+    --padding-large: 24px;
 }
 
-/* General body styling */
+/* --- Global Styles & Resets --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: var(--font-size-base);
+}
+
 body {
-    font-family: var(--primary-font);
-    color: var(--text-color);
+    font-family: var(--font-ui);
+    color: var(--text-primary);
+    background-color: var(--bg-main);
     margin: 0;
-    padding: 0; /* Remove padding if page-container handles it */
-    background-color: var(--white-color); /* Cleaner background, page-container can have its own */
-    line-height: 1.6;
+    line-height: var(--line-height-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Page container for max-width and centering */
+/* --- Page Structure & Layout --- */
 .page-container {
-    max-width: var(--max-page-width);
-    margin: 0 auto; /* Center the container */
-    padding: 0 15px; /* Add some padding on the sides, especially for smaller screens */
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensure it takes at least full viewport height */
+    min-height: 100vh;
+    padding: var(--padding-medium); /* Padding around the central card */
 }
 
-/* Header styling */
-header {
-    background-color: var(--dark-gray-color);
-    color: var(--white-color);
-    padding: 20px 0; /* Vertical padding, horizontal handled by page-container's padding */
-    text-align: center;
-    border-bottom: 3px solid var(--primary-color);
-}
-
-header .logo-area h1 {
-    font-family: var(--heading-font);
-    font-weight: 900; /* Bolder for main title */
-    font-size: 2em; /* Larger font for main title */
-    margin: 0 0 5px 0;
-}
-
-header .tagline {
-    font-family: var(--primary-font);
-    font-size: 0.9em;
-    color: var(--light-gray-color); /* Slightly lighter than pure white */
-}
-
-/* Controls bar styling */
-.controls {
-    padding: 15px 0; /* Vertical padding, horizontal handled by page-container's padding */
-    background-color: var(--light-gray-color);
-    border-bottom: 1px solid var(--medium-gray-color);
+.app-card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 4px 12px var(--shadow-color);
+    width: 100%;
+    max-width: 1200px; /* Max width for the card content */
+    margin: auto; /* Center the card on the page */
     display: flex;
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-    gap: 10px; /* Space between buttons */
-    align-items: center; /* Align items nicely if they wrap */
-    margin-bottom: 15px; /* Space before the editor */
+    flex-direction: column;
+    flex-grow: 1; /* Allow app-card to grow to fill page-container along with editor */
+    overflow: hidden; /* Contain rounded corners */
 }
 
-.controls button, .button-like-label {
-    font-family: var(--primary-font);
-    padding: 10px 18px; /* Slightly larger buttons */
-    border: 1px solid var(--primary-color);
-    background-color: var(--primary-color);
-    color: var(--white-color);
+/* --- Header --- */
+.app-header {
+    padding: var(--padding-medium) var(--padding-large);
+    border-bottom: 1px solid var(--border-color-subtle);
+    text-align: left; /* Align header content to the left */
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and title */
+}
+
+.cloud-icon {
+    font-size: 1.8em; /* Adjust size of cloud icon */
+    color: var(--accent-primary);
+    line-height: 1; /* Prevent extra spacing */
+}
+
+.app-header h1 {
+    font-family: var(--font-ui); /* Using UI font for consistency in header */
+    font-weight: 600;
+    font-size: 1.5em; /* Prominent but not overly large */
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.app-header .tagline {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    display: block; /* Ensure it takes its own line if needed */
+    padding-left: calc(1.8em + 10px); /* Align with title if icon is present */
+}
+
+/* --- Controls Bar --- */
+.controls {
+    padding: var(--padding-medium) var(--padding-large);
+    background-color: var(--bg-card); /* Same as card or slightly different if desired */
+    border-bottom: 1px solid var(--border-color-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-small);
+    align-items: center;
+}
+
+.btn {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    padding: var(--padding-small) var(--padding-medium);
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-small);
     cursor: pointer;
-    border-radius: var(--border-radius);
-    font-size: 0.95em;
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
-    text-align: center; /* Ensure text is centered */
+    font-size: 0.9em;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    text-align: center;
+    display: inline-block; /* For label to behave like button */
 }
 
-.controls button:hover, .button-like-label:hover {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
+.btn:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
 }
 
-/* Main content area styling */
-main {
-    flex-grow: 1; /* Allows the main area to take up remaining vertical space */
-    display: flex; /* To make textarea fill the space */
-    /* Padding removed, handled by page-container or specific elements if needed */
+/* Button Hierarchy */
+.btn-neutral {
+    background-color: #3A3B3F; /* Neutral dark gray */
+    color: var(--text-primary);
+    border-color: #5A5B5F;
+}
+.btn-neutral:hover {
+    background-color: #4A4B4F;
+    border-color: #6A6B6F;
+}
+.btn-neutral:active {
+    background-color: #2A2B2F;
 }
 
-/* Text editor (textarea) styling */
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: var(--white-color, #FFF); /* Assuming accent is dark enough for white text */
+    border-color: var(--accent-primary);
+}
+.btn-primary:hover {
+    background-color: var(--accent-primary-hover);
+    border-color: var(--accent-primary-hover);
+}
+.btn-primary:active {
+    background-color: var(--accent-primary); /* Darken on active or keep same */
+}
+
+.btn-secondary { /* Ghost button style */
+    background-color: transparent;
+    color: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+}
+.btn-secondary:hover {
+    background-color: rgba(57, 160, 237, 0.1); /* Subtle hover background */
+    color: var(--accent-secondary-hover);
+    border-color: var(--accent-secondary-hover);
+}
+.btn-secondary:active {
+    background-color: rgba(57, 160, 237, 0.2);
+}
+
+/* --- Editor Area --- */
+.editor-container {
+    flex-grow: 1; /* Key for editor to fill remaining space */
+    display: flex; /* To make textarea fill this container */
+    padding: 0 var(--padding-large) var(--padding-large) var(--padding-large); /* Padding around editor, no top padding as it's below controls */
+    background-color: var(--bg-card); /* Editor is part of the card */
+}
+
 #editor {
     width: 100%;
-    height: 100%; /* Will be controlled by main's flex behavior */
-    min-height: 400px; /* Minimum height for the editor, especially on larger screens */
-    border: 1px solid var(--medium-gray-color);
-    padding: 15px;
-    font-family: 'Courier New', Courier, monospace; /* Keep monospaced for editor consistency */
-    font-size: 1em;
-    box-sizing: border-box;
-    resize: vertical; /* Allow vertical resizing, disable horizontal */
-    border-radius: var(--border-radius);
-    line-height: 1.5; /* Improved line height within editor */
+    height: 100%; /* Fill the editor-container */
+    background-color: var(--bg-editor);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    padding: var(--padding-medium);
+    font-family: var(--font-editor);
+    font-size: 0.95em; /* Slightly smaller for editor text */
+    line-height: 1.7; /* Generous line height for code/text */
+    resize: none; /* Disable manual resizing to maintain layout */
+}
+
+#editor::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8; /* Ensure it's visible */
 }
 
 #editor:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Subtle focus indicator */
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3); /* Focus ring with accent color */
 }
 
-/* Hidden file input - label is styled as a button */
+/* --- Hidden File Input --- */
 #fileLoader {
     display: none;
 }
 
-/* --- Responsive Design --- */
+/* --- Responsive Design Adjustments --- */
+@media (max-width: 768px) { /* Tablet and smaller */
+    .page-container {
+        padding: var(--padding-small); /* Reduce padding on smaller screens */
+    }
 
-/* For tablets and smaller desktops */
-@media (max-width: 768px) {
-    header .logo-area h1 {
-        font-size: 1.8em; /* Slightly smaller title */
+    .app-header {
+        padding: var(--padding-medium);
+    }
+    .app-header h1 {
+        font-size: 1.3em;
+    }
+    .app-header .tagline {
+        font-size: 0.8em;
+        padding-left: calc(1.8em + 8px); /* Adjust if icon size changes */
+    }
+    .cloud-icon {
+        font-size: 1.6em;
     }
 
     .controls {
-        flex-direction: column; /* Stack buttons vertically */
-        align-items: stretch; /* Make buttons full width of controls container */
+        padding: var(--padding-medium);
+        flex-direction: column; /* Stack buttons */
+        align-items: stretch; /* Full width buttons */
+    }
+    .btn { /* Ensure buttons take full width in stacked layout */
+        width: 100%;
+    }
+    .btn + .btn, .btn + .button-like-label, .button-like-label + .btn { /* Add margin if not using gap effectively in column */
+         margin-top: var(--padding-small);
+    }
+    .controls .button-like-label { /* Ensure label also takes full width */
+        display: block; /* or inline-block with width 100% */
     }
 
-    .controls button, .button-like-label {
-        width: 100%; /* Full width buttons */
-        margin-bottom: 5px; /* Add a little space between stacked buttons */
-    }
-    .controls button:last-child, .button-like-label:last-child {
-        margin-bottom: 0;
-    }
 
+    .editor-container {
+        padding: 0 var(--padding-medium) var(--padding-medium) var(--padding-medium);
+    }
     #editor {
-        min-height: 300px; /* Adjust min-height for smaller screens */
+        font-size: 0.9em;
+        min-height: 300px; /* Ensure a decent editor height on tablets */
     }
 }
 
-/* For mobile phones */
-@media (max-width: 480px) {
-    .page-container {
-        padding: 0 10px; /* Reduce side padding on very small screens */
+@media (max-width: 480px) { /* Mobile */
+    .app-header h1 {
+        font-size: 1.1em;
     }
-
-    header .logo-area h1 {
-        font-size: 1.5em; /* Even smaller title */
+    .app-header .tagline {
+        font-size: 0.75em;
     }
-    header .tagline {
-        font-size: 0.8em;
+    .cloud-icon {
+        font-size: 1.4em;
     }
-
-    .controls button, .button-like-label {
-        padding: 12px 15px; /* Adjust padding for touch targets */
-        font-size: 1em;
+    .btn {
+        font-size: 0.95em; /* Slightly larger for touch */
+        padding: 10px var(--padding-medium);
     }
-
     #editor {
-        font-size: 0.95em; /* Slightly smaller font in editor for mobile */
-        min-height: 250px;
+        font-size: 0.85em;
+        min-height: 250px; /* Ensure a decent editor height on mobile */
     }
 }
