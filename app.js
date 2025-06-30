@@ -14,8 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
 
     // Stores the name of the currently loaded file, primarily for the save function.
-    // For client-side only, this is less critical but good for future expansion.
-    let currentFileName = 'untitled.txt';
+    let currentFileName = 'KramerWrite-document.txt'; // Updated default filename
 
     /**
      * --------------------------------------------------------------------
@@ -47,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //     }
         // }
         editorTextArea.value = '';
-        currentFileName = 'untitled.txt';
+        currentFileName = 'KramerWrite-document.txt'; // Ensure new files also use branded default
         // Optionally, clear undo/redo history if implementing custom undo/redo
         console.log("New document created.");
     }
