@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Word Processor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header section for branding or global controls -->
+    <header>
+        <h1>Web Word Processor</h1>
+    </header>
+
+    <!-- Control bar for main actions -->
+    <div class="controls">
+        <button id="btnNew">New File</button>
+        <button id="btnSave">Save (.txt)</button>
+        <label for="fileLoader" class="button-like-label">Load (.txt)</label>
+        <input type="file" id="fileLoader" accept=".txt" style="display: none;">
+    </div>
+
+    <!-- Main text editing area -->
+    <main>
+        <textarea id="editor" placeholder="Start typing here..."></textarea>
+    </main>
+
+    <!-- Footer can be added later if needed -->
+    <!-- <footer></footer> -->
+
+    <script src="app.js"></script>
+</body>
+</html>

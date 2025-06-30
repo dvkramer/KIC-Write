@@ -1,0 +1,69 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    height: 100vh; /* Full viewport height */
+    background-color: #f4f4f4; /* Light grey background */
+}
+
+/* Header styling */
+header {
+    background-color: #333; /* Dark grey background */
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+/* Controls bar styling */
+.controls {
+    padding: 10px 20px;
+    background-color: #eee; /* Lighter grey for controls */
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+.controls button, .button-like-label {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.controls button:hover, .button-like-label:hover {
+    background-color: #f0f0f0; /* Slight hover effect */
+}
+
+/* Main content area styling (where textarea resides) */
+main {
+    flex-grow: 1; /* Allows the main area to take up remaining space */
+    display: flex; /* To make textarea fill the space */
+    padding: 10px;
+}
+
+/* Text editor (textarea) styling */
+#editor {
+    width: 100%;
+    height: 100%; /* Fill the main area */
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace; /* Monospaced font for editor */
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    resize: none; /* Disable manual resizing by user if desired, or use 'vertical'/'horizontal' */
+}
+
+/* Hidden file input - the label is styled to look like a button */
+#fileLoader {
+    display: none;
+}
