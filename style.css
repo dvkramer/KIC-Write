@@ -1,69 +1,178 @@
+/*
+ * style.css
+ * Styling for Kramer Intelligent Cloud Write
+ * Focuses on branding, responsive design, and modern aesthetics.
+ */
+
+/* Google Fonts Import - Using Lato and Open Sans as examples */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Lato:wght@400;700;900&display=swap');
+
+/* CSS Variables for Branding - Easy to update later */
+:root {
+    --primary-font: 'Open Sans', sans-serif;
+    --heading-font: 'Lato', sans-serif;
+    --primary-color: #007bff; /* A modern blue - can be adjusted */
+    --secondary-color: #0056b3; /* Darker blue for hover/active states */
+    --light-gray-color: #f8f9fa; /* Light background for sections */
+    --medium-gray-color: #e9ecef; /* Borders and dividers */
+    --dark-gray-color: #343a40;  /* Header text, potentially other dark elements */
+    --text-color: #212529; /* Main body text */
+    --white-color: #ffffff;
+    --max-page-width: 1200px; /* Maximum width for the content area */
+    --border-radius: 5px; /* Consistent border radius */
+}
+
 /* General body styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: var(--primary-font);
+    color: var(--text-color);
     margin: 0;
-    padding: 0;
+    padding: 0; /* Remove padding if page-container handles it */
+    background-color: var(--white-color); /* Cleaner background, page-container can have its own */
+    line-height: 1.6;
+}
+
+/* Page container for max-width and centering */
+.page-container {
+    max-width: var(--max-page-width);
+    margin: 0 auto; /* Center the container */
+    padding: 0 15px; /* Add some padding on the sides, especially for smaller screens */
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    height: 100vh; /* Full viewport height */
-    background-color: #f4f4f4; /* Light grey background */
+    flex-direction: column;
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
 }
 
 /* Header styling */
 header {
-    background-color: #333; /* Dark grey background */
-    color: white;
-    padding: 10px 20px;
+    background-color: var(--dark-gray-color);
+    color: var(--white-color);
+    padding: 20px 0; /* Vertical padding, horizontal handled by page-container's padding */
     text-align: center;
+    border-bottom: 3px solid var(--primary-color);
 }
 
-header h1 {
-    margin: 0;
-    font-size: 1.5em;
+header .logo-area h1 {
+    font-family: var(--heading-font);
+    font-weight: 900; /* Bolder for main title */
+    font-size: 2em; /* Larger font for main title */
+    margin: 0 0 5px 0;
+}
+
+header .tagline {
+    font-family: var(--primary-font);
+    font-size: 0.9em;
+    color: var(--light-gray-color); /* Slightly lighter than pure white */
 }
 
 /* Controls bar styling */
 .controls {
-    padding: 10px 20px;
-    background-color: #eee; /* Lighter grey for controls */
-    border-bottom: 1px solid #ccc;
+    padding: 15px 0; /* Vertical padding, horizontal handled by page-container's padding */
+    background-color: var(--light-gray-color);
+    border-bottom: 1px solid var(--medium-gray-color);
     display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
     gap: 10px; /* Space between buttons */
+    align-items: center; /* Align items nicely if they wrap */
+    margin-bottom: 15px; /* Space before the editor */
 }
 
 .controls button, .button-like-label {
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    background-color: #fff;
+    font-family: var(--primary-font);
+    padding: 10px 18px; /* Slightly larger buttons */
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--white-color);
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 0.9em;
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    text-align: center; /* Ensure text is centered */
 }
 
 .controls button:hover, .button-like-label:hover {
-    background-color: #f0f0f0; /* Slight hover effect */
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
 }
 
-/* Main content area styling (where textarea resides) */
+/* Main content area styling */
 main {
-    flex-grow: 1; /* Allows the main area to take up remaining space */
+    flex-grow: 1; /* Allows the main area to take up remaining vertical space */
     display: flex; /* To make textarea fill the space */
-    padding: 10px;
+    /* Padding removed, handled by page-container or specific elements if needed */
 }
 
 /* Text editor (textarea) styling */
 #editor {
     width: 100%;
-    height: 100%; /* Fill the main area */
-    border: 1px solid #ccc;
-    padding: 10px;
-    font-family: 'Courier New', Courier, monospace; /* Monospaced font for editor */
+    height: 100%; /* Will be controlled by main's flex behavior */
+    min-height: 400px; /* Minimum height for the editor, especially on larger screens */
+    border: 1px solid var(--medium-gray-color);
+    padding: 15px;
+    font-family: 'Courier New', Courier, monospace; /* Keep monospaced for editor consistency */
     font-size: 1em;
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
-    resize: none; /* Disable manual resizing by user if desired, or use 'vertical'/'horizontal' */
+    box-sizing: border-box;
+    resize: vertical; /* Allow vertical resizing, disable horizontal */
+    border-radius: var(--border-radius);
+    line-height: 1.5; /* Improved line height within editor */
 }
 
-/* Hidden file input - the label is styled to look like a button */
+#editor:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Subtle focus indicator */
+}
+
+/* Hidden file input - label is styled as a button */
 #fileLoader {
     display: none;
+}
+
+/* --- Responsive Design --- */
+
+/* For tablets and smaller desktops */
+@media (max-width: 768px) {
+    header .logo-area h1 {
+        font-size: 1.8em; /* Slightly smaller title */
+    }
+
+    .controls {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: stretch; /* Make buttons full width of controls container */
+    }
+
+    .controls button, .button-like-label {
+        width: 100%; /* Full width buttons */
+        margin-bottom: 5px; /* Add a little space between stacked buttons */
+    }
+    .controls button:last-child, .button-like-label:last-child {
+        margin-bottom: 0;
+    }
+
+    #editor {
+        min-height: 300px; /* Adjust min-height for smaller screens */
+    }
+}
+
+/* For mobile phones */
+@media (max-width: 480px) {
+    .page-container {
+        padding: 0 10px; /* Reduce side padding on very small screens */
+    }
+
+    header .logo-area h1 {
+        font-size: 1.5em; /* Even smaller title */
+    }
+    header .tagline {
+        font-size: 0.8em;
+    }
+
+    .controls button, .button-like-label {
+        padding: 12px 15px; /* Adjust padding for touch targets */
+        font-size: 1em;
+    }
+
+    #editor {
+        font-size: 0.95em; /* Slightly smaller font in editor for mobile */
+        min-height: 250px;
+    }
 }
