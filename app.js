@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
 
     // Stores the name of the currently loaded file, primarily for the save function.
-    let currentFileName = 'KramerWrite-document.txt'; // Updated default filename
+    let currentFileName = 'KramerWrite-document.dvk'; // Default filename updated to .dvk
 
     /**
      * --------------------------------------------------------------------
@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * --------------------------------------------------------------------
      * Cache references to frequently used DOM elements.
      */
-    const editorTextArea = document.getElementById('editor');
+    const editorDiv = document.getElementById('editor'); // Renamed from editorTextArea
+    let quill; // Declare quill variable that will be initialized later
+
     const newFileButton = document.getElementById('btnNew');
     const saveFileButton = document.getElementById('btnSave');
     const fileLoaderInput = document.getElementById('fileLoader'); // The actual <input type="file">
@@ -45,8 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
         //         return;
         //     }
         // }
-        editorTextArea.value = '';
-        currentFileName = 'KramerWrite-document.txt'; // Ensure new files also use branded default
+        if (quill) {
+            quill.setText(''); // Clear content
+            // Consider quill.root.innerHTML = '<p><br></p>'; if you want a starting paragraph
+        }
+        currentFileName = 'KramerWrite-document.dvk'; // Default to .dvk
         // Optionally, clear undo/redo history if implementing custom undo/redo
         console.log("New document created.");
     }
@@ -62,9 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return; // No file selected
         }
 
-        if (file.type !== "text/plain") {
-            alert("Please select a valid .txt file.");
-            console.warn("Invalid file type selected:", file.type);
+        // For now, we'll be a bit flexible with file type for .dvk, as it might not have a standard MIME type
+        // We'll primarily rely on the extension.
+        if (!file.name.endsWith('.dvk')) {
+            alert("Please select a valid .dvk file.");
+            console.warn("Invalid file type selected:", file.name, file.type);
             return;
         }
 
@@ -72,7 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         reader.onload = (e) => {
             try {
-                editorTextArea.value = e.target.result;
+                if (quill) {
+                    quill.root.innerHTML = e.target.result;
+                }
                 currentFileName = file.name; // Store the name of the loaded file
                 console.log(`Document "${currentFileName}" loaded.`);
             } catch (error) {
@@ -97,13 +106,43 @@ document.addEventListener('DOMContentLoaded', () => {
      * The filename is based on `currentFileName`.
      */
     function saveDocument() {
-        const textContent = editorTextArea.value;
-        const blob = new Blob([textContent], { type: 'text/plain' });
+        if (!quill) {
+            console.error("Quill editor not initialized.");
+            alert("Error: Editor not available.");
+            return;
+        }
+        const htmlContent = quill.root.innerHTML;
+        // Basic check to ensure we don't save an empty Quill editor (which often has <p><br></p>)
+        // You might want a more sophisticated check for "empty"
+        if (htmlContent === '<p><br></p>' || htmlContent === '') {
+            // If you want to allow saving "empty" documents, remove or adjust this check.
+            // For now, let's assume an empty document shouldn't create a file, or prompt user.
+            console.log("Document is empty. Save operation cancelled.");
+            // alert("Document is empty. Nothing to save."); // Optional: inform user
+            // return; // Or allow saving empty.
+        }
+
+        const blob = new Blob([htmlContent], { type: 'text/html' }); // Changed type to text/html for .dvk
 
         // Create a temporary anchor element to trigger the download
         const anchor = document.createElement('a');
         anchor.href = URL.createObjectURL(blob);
-        anchor.download = currentFileName || 'document.txt'; // Use currentFileName or a default
+
+        // Ensure filename ends with .dvk
+        let filenameToSave = currentFileName || 'KramerWrite-document.dvk';
+        if (!filenameToSave.endsWith('.dvk')) {
+            filenameToSave = filenameToSave.substring(0, filenameToSave.lastIndexOf('.')) + '.dvk';
+            if (!filenameToSave.includes('.')) { // Handle cases where original filename had no extension
+                 filenameToSave = currentFileName + '.dvk';
+            }
+        }
+        // If original currentFileName was a .txt file, ensure it's renamed to .dvk for saving
+        if (currentFileName.endsWith('.txt') && !filenameToSave.endsWith('.dvk')) {
+            filenameToSave = currentFileName.replace('.txt', '.dvk');
+        }
+
+
+        anchor.download = filenameToSave;
 
         document.body.appendChild(anchor); // Required for Firefox
         anchor.click(); // Simulate a click to trigger download
@@ -125,10 +164,35 @@ document.addEventListener('DOMContentLoaded', () => {
      * This function is called once the DOM is ready.
      */
     function initializeUI() {
-        if (!editorTextArea || !newFileButton || !saveFileButton || !fileLoaderInput) {
+        if (!editorDiv || !newFileButton || !saveFileButton || !fileLoaderInput) { // Check editorDiv
             console.error("One or more essential UI elements are missing. Check IDs in index.html.");
             return;
         }
+
+        // Initialize Quill editor
+        quill = new Quill(editorDiv, { // Assign to the globally declared quill variable
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'], // Added image and link
+                    ['clean']
+                ]
+            },
+            placeholder: 'Start typing here...',
+        });
+
+        // Update button labels and input accept type
+        saveFileButton.textContent = 'Save (.dvk)';
+        const loadButtonLabel = document.querySelector('label[for="fileLoader"]');
+        if (loadButtonLabel) {
+            loadButtonLabel.textContent = 'Load (.dvk)';
+        }
+        fileLoaderInput.accept = '.dvk,text/html'; // Accept .dvk files
+
 
         newFileButton.addEventListener('click', newDocument);
         saveFileButton.addEventListener('click', saveDocument);
@@ -137,7 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // We listen for the 'change' event on the input itself.
         fileLoaderInput.addEventListener('change', loadDocument);
 
-        console.log("UI Initialized and event listeners attached.");
+        // Set initial filename to .dvk
+        currentFileName = 'KramerWrite-document.dvk';
+
+        console.log("UI Initialized, Quill editor is ready, and event listeners attached.");
     }
 
     /**

@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Placeholder for Google Fonts if we decide to use them -->
     <!-- <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet"> -->
+    <!-- Include Quill stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 </head>
 <body>
     <div class="page-container"> <!-- Wrapper for overall page structure and dark theme background -->
@@ -26,14 +28,15 @@
             <!-- Control bar for main actions -->
             <div class="controls">
                 <button id="btnNew" class="btn btn-neutral" aria-label="Create a new file">New File</button>
-                <button id="btnSave" class="btn btn-primary" aria-label="Save current document as a text file">Save (.txt)</button>
-                <label for="fileLoader" class="btn btn-secondary" role="button" aria-label="Load a text file from your computer">Load (.txt)</label>
-                <input type="file" id="fileLoader" accept=".txt" style="display: none;">
+                <button id="btnSave" class="btn btn-primary" aria-label="Save current document as a DVK file">Save (.dvk)</button>
+                <label for="fileLoader" class="btn btn-secondary" role="button" aria-label="Load a DVK file from your computer">Load (.dvk)</label>
+                <input type="file" id="fileLoader" accept=".dvk,text/html" style="display: none;">
             </div>
 
             <!-- Main text editing area -->
             <main class="editor-container">
-                <textarea id="editor" placeholder="Start typing here..." aria-label="Text editor"></textarea>
+                <!-- Quill editor container -->
+                <div id="editor"></div>
             </main>
         </div> <!-- Closing app-card -->
 
@@ -44,6 +47,8 @@
         </footer>
         -->
 
+    <!-- Include the Quill library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <script src="app.js"></script>
     </div> <!-- Closing page-container -->
 </body>

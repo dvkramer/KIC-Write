@@ -198,30 +198,105 @@ body {
 
 #editor {
     width: 100%;
-    /* height: 100%; Let flex-grow handle height, or min-height + flex-grow */
-    flex-grow: 1; /* Make the textarea itself grow within editor-container */
+    flex-grow: 1;
+    /* background-color and color are handled by .ql-editor for the content area */
+    border: 1px solid var(--border-color); /* Single definition for container border */
+    border-radius: var(--border-radius-medium); /* Single definition for container border radius */
+    padding: 0; /* Container has no padding; .ql-editor handles its internal padding */
+    font-family: var(--font-editor); /* Base font for the editor, inherited by .ql-editor */
+    font-size: 0.95em; /* Base font size for the editor */
+    line-height: 1.7; /* Base line height */
+    min-height: 150px; /* Minimum height for the entire #editor block (toolbar + content area) */
+    display: flex;
+    flex-direction: column; /* Stack toolbar and editor area vertically */
+    overflow: hidden; /* Ensures border-radius clips children (like the toolbar) */
+}
+
+/* Unified Styling Quill's toolbar */
+#editor .ql-toolbar.ql-snow {
+    background-color: var(--bg-card); /* Match card background */
+    /* border-top-left-radius and border-top-right-radius are effectively 0 due to #editor's overflow:hidden and border-radius */
+    border-bottom: 1px solid var(--border-color-subtle); /* Subtle separator line */
+    padding: 8px 12px; /* Specific padding for toolbar */
+    position: relative;
+    z-index: 1; /* Keep toolbar above editor content if overlap occurs */
+}
+
+/* Styling the actual Quill editor content area (the div where you type) */
+#editor .ql-editor {
     background-color: var(--bg-editor);
     color: var(--text-primary);
+    padding: var(--padding-medium);
+    flex-grow: 1; /* Allow editor area to take available space */
+    overflow-y: auto;
+    /* height: 100%; Is not strictly needed if flex-grow is working */
+    min-height: 100px; /* Minimum height for the editable area itself */
+}
+
+/* Remove the border from ql-container if #editor (parent) already has it */
+#editor.ql-container.ql-snow {
+    border: none; /* Quill adds its own border, remove it if we style #editor */
+}
+
+
+/* The duplicated #editor .ql-toolbar.ql-snow rule was here and is now removed by merging above. */
+
+/* Adjust toolbar button icon/text styling for dark theme */
+.ql-snow .ql-picker-label,
+.ql-snow .ql-stroke,
+.ql-snow .ql-fill {
+    color: var(--text-primary) !important; /* Override Quill's default icon colors */
+}
+.ql-snow .ql-picker.ql-expanded .ql-picker-label {
+    border-color: var(--border-color) !important;
+}
+.ql-snow .ql-picker-options {
+    background-color: var(--bg-editor); /* Dropdown background */
+    border-color: var(--border-color);
+}
+.ql-snow .ql-picker-item:hover {
+    background-color: var(--bg-main); /* Hover effect for dropdown items */
+}
+
+
+#editor .ql-editor.ql-blank::before{ /* Placeholder styling */
+    color: var(--text-secondary);
+    opacity: 0.8;
+    font-style: normal; /* Quill's default is italic, this can be personal preference */
+}
+
+/*
+The following rule for #editor.ql-container.ql-snow is redundant because
+the #editor rule itself defines the primary border and border-radius for the container,
+and another rule '#editor.ql-container.ql-snow { border: none; }' correctly removes
+Quill's default border styling from the element that #editor targets.
+
+#editor.ql-container.ql-snow {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-medium);
-    padding: var(--padding-medium);
-    font-family: var(--font-editor);
-    font-size: 0.95em; /* Slightly smaller for editor text */
-    line-height: 1.7; /* Generous line height for code/text */
-    resize: none; /* Disable manual resizing to maintain layout */
-    min-height: 150px; /* Fallback or initial small height before it grows, adjust as needed */
+}
+*/
+
+/* Focus indication for the editor */
+#editor:focus-within {
+    border-color: var(--accent-primary) !important; /* Change border on the main #editor container */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3); /* Outer glow */
 }
 
-#editor::placeholder {
-    color: var(--text-secondary);
-    opacity: 0.8; /* Ensure it's visible */
-}
-
-#editor:focus {
+/* Remove default outline from the internal .ql-editor as focus is handled by parent */
+#editor .ql-editor:focus {
     outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3); /* Focus ring with accent color */
 }
+
+
+/* Ensure the editor container itself still grows */
+.editor-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Important for Quill's toolbar and editor layout */
+    padding: 0 var(--padding-large) var(--padding-large) var(--padding-large);
+}
+
 
 /* --- Hidden File Input --- */
 #fileLoader {
