@@ -58,13 +58,14 @@ body {
     line-height: var(--line-height-base);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-y: hidden; /* Prevent body scroll when app-card is the scroller */
 }
 
 /* --- Page Structure & Layout --- */
 .page-container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh; /* Changed from min-height to height */
     padding: var(--padding-medium); /* Padding around the central card */
 }
 
@@ -78,7 +79,9 @@ body {
     display: flex;
     flex-direction: column;
     flex-grow: 1; /* Allow app-card to grow to fill page-container */
-    overflow: hidden; /* Contain rounded corners for child elements */
+    overflow-y: auto; /* Make app-card the main scrolling container for its content */
+    overflow-x: hidden; /* Prevent horizontal scroll on app-card */
+    position: relative; /* Required for sticky elements to stick within this container */
     /* Ensure app-card itself can be perceived as growing; padding bottom might be an issue */
 }
 
@@ -87,6 +90,15 @@ body {
     padding: var(--padding-medium) var(--padding-large);
     border-bottom: 1px solid var(--border-color-subtle);
     text-align: left; /* Align header content to the left */
+    position: sticky;
+    top: 0;
+    z-index: 1002;
+    background-color: var(--bg-card); /* Ensure it has a background */
+    transition: transform 0.3s ease-in-out;
+}
+
+.app-header.logo-hidden {
+    transform: translateY(-100%);
 }
 
 .logo-area {
@@ -126,6 +138,10 @@ body {
     flex-wrap: wrap;
     gap: var(--padding-small);
     align-items: center;
+    position: sticky; /* Will stick relative to app-card */
+    top: 0; /* Placeholder, JS will adjust this based on logo height */
+    z-index: 1001;
+    /* background-color is already var(--bg-card), which is good */
 }
 
 .btn {
@@ -218,8 +234,10 @@ body {
     /* border-top-left-radius and border-top-right-radius are effectively 0 due to #editor's overflow:hidden and border-radius */
     border-bottom: 1px solid var(--border-color-subtle); /* Subtle separator line */
     padding: 8px 12px; /* Specific padding for toolbar */
-    position: relative;
-    z-index: 1; /* Keep toolbar above editor content if overlap occurs */
+    position: sticky; /* Will stick relative to its offset parent #editor */
+    top: 0; /* Placeholder, JS will adjust this based on logo and controls height */
+    z-index: 1000;
+    /* background-color: var(--bg-card); is already set, which is good */
 }
 
 /* Styling the actual Quill editor content area (the div where you type) */
@@ -227,10 +245,12 @@ body {
     background-color: var(--bg-editor);
     color: var(--text-primary);
     padding: var(--padding-medium);
-    flex-grow: 1; /* Allow editor area to take available space */
-    overflow-y: auto;
+    flex-grow: 1; /* Allow editor area to take available space within #editor */
+    overflow-y: auto; /* Allows scrolling of content within the .ql-editor itself */
     /* height: 100%; Is not strictly needed if flex-grow is working */
     min-height: 100px; /* Minimum height for the editable area itself */
+    /* Ensure it doesn't shrink below its content if content is small */
+    height: 1px; /* Hackish way to ensure flex-grow works, might need adjustment if problematic */
 }
 
 /* Remove the border from ql-container if #editor (parent) already has it */
