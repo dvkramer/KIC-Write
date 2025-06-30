@@ -30,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileLoaderInput = document.getElementById('fileLoader'); // The actual <input type="file">
     // The 'Load (.txt)' button is a label for fileLoaderInput, so clicks on it will trigger the input.
 
+    // Elements for sticky navigation
+    const appCard = document.querySelector('.app-card');
+    const appHeader = document.querySelector('.app-header');
+    const controlsBar = document.querySelector('.controls');
+    let quillToolbar; // Will be assigned after Quill initializes
+
     /**
      * --------------------------------------------------------------------
      * DOCUMENT MODULE (Functionality related to document handling)
@@ -159,13 +165,53 @@ document.addEventListener('DOMContentLoaded', () => {
      * --------------------------------------------------------------------
      */
 
+    let lastScrollTop = 0;
+
+    function updateStickyTops() {
+        if (!appHeader || !controlsBar || !quillToolbar) {
+            console.warn("Sticky elements not found for positioning.");
+            return;
+        }
+
+        const appHeaderHeight = appHeader.classList.contains('logo-hidden') ? 0 : appHeader.offsetHeight;
+
+        controlsBar.style.top = `${appHeaderHeight}px`;
+
+        const controlsBarHeight = controlsBar.offsetHeight;
+        quillToolbar.style.top = `${appHeaderHeight + controlsBarHeight}px`;
+    }
+
+    function handleAppCardScroll() {
+        if (!appCard || !appHeader) return;
+
+        let st = appCard.scrollTop;
+
+        if (st > lastScrollTop && st > appHeader.offsetHeight) {
+            // Downscroll, past the header
+            if (!appHeader.classList.contains('logo-hidden')) {
+                appHeader.classList.add('logo-hidden');
+                updateStickyTops();
+            }
+        } else {
+            // Upscroll or not past the header
+            if (appHeader.classList.contains('logo-hidden')) {
+                if (st < lastScrollTop) { // Only reveal on upscroll
+                    appHeader.classList.remove('logo-hidden');
+                    updateStickyTops();
+                }
+            }
+        }
+        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+    }
+
+
     /**
      * Initializes UI event listeners.
      * This function is called once the DOM is ready.
      */
     function initializeUI() {
-        if (!editorDiv || !newFileButton || !saveFileButton || !fileLoaderInput) { // Check editorDiv
-            console.error("One or more essential UI elements are missing. Check IDs in index.html.");
+        if (!editorDiv || !newFileButton || !saveFileButton || !fileLoaderInput || !appCard || !appHeader || !controlsBar) {
+            console.error("One or more essential UI elements are missing. Check IDs/classes in index.html and script.");
             return;
         }
 
@@ -185,6 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
             placeholder: 'Start typing here...',
         });
 
+        // Now that Quill is initialized, its toolbar exists.
+        quillToolbar = editorDiv.querySelector('.ql-toolbar.ql-snow');
+        if (!quillToolbar) {
+            console.error("Quill toolbar element not found after initialization!");
+            return;
+        }
+
         // Update button labels and input accept type
         saveFileButton.textContent = 'Save (.dvk)';
         const loadButtonLabel = document.querySelector('label[for="fileLoader"]');
@@ -203,6 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Set initial filename to .dvk
         currentFileName = 'KramerWrite-document.dvk';
+
+        // Setup for sticky navigation
+        if (appCard) {
+            appCard.addEventListener('scroll', handleAppCardScroll);
+        }
+        window.addEventListener('resize', updateStickyTops);
+
+        // Initial positioning of sticky elements
+        // Use a small timeout to ensure layout is stable after Quill initialization
+        setTimeout(updateStickyTops, 100);
+
 
         console.log("UI Initialized, Quill editor is ready, and event listeners attached.");
     }
