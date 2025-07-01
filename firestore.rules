@@ -1,16 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Target the 'files' collection
     match /files/{fileId} {
+      // For existing documents, allow a user to read, update, or delete
+      // ONLY if their user ID matches the authorId on the document.
+      allow read, update, delete: if request.auth.uid == resource.data.authorId;
 
-      // Allow a user to CREATE a document if they are logged in
-      // and the authorId in the NEW document's data matches their own user ID.
-      allow create: if request.auth != null && request.resource.data.authorId == request.auth.uid;
-
-      // Allow a user to READ, UPDATE, or DELETE an existing document if they are logged in
-      // and their user ID matches the authorId on the EXISTING document.
-      allow read, update, delete: if request.auth != null && resource.data.authorId == request.auth.uid;
+      // For new documents, allow a user to create it
+      // ONLY if they set the authorId in the new document to their own user ID.
+      allow create: if request.auth.uid == request.resource.data.authorId;
     }
   }
 }
