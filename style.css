@@ -126,7 +126,6 @@ body {
     box-sizing: border-box;
     /* Fix toolbar overflow on mobile */
     overflow-x: auto;
-    overflow-y: hidden;
 }
 
 /* Style Quill icons for dark theme */
