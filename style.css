@@ -98,6 +98,83 @@ body {
     /* REMOVED FLEXBOX PROPERTIES */
 }
 
+/* Auth Form Styling */
+#login-form {
+    display: flex;
+    flex-wrap: nowrap; /* Keep all items on one line */
+    gap: 0.3rem; /* Reduced gap for tighter packing */
+    align-items: center;
+    padding: 0.5rem; /* Reduced padding */
+    justify-content: flex-start; /* Align items to the start */
+    overflow-x: auto; /* Allow horizontal scrolling if needed on very small screens */
+}
+
+#login-form input[type="email"],
+#login-form input[type="password"] {
+    font-family: 'Inter', sans-serif;
+    background-color: #3B3C40;
+    color: #E9ECEF;
+    border: 1px solid #4A4B50;
+    padding: 5px 8px; /* Further reduced padding */
+    border-radius: 3px; /* Slightly smaller border radius */
+    font-size: 0.8em; /* Further reduced font size */
+    flex-grow: 1; /* Allow inputs to grow */
+    min-width: 120px; /* Adjust min-width as needed */
+    height: 32px; /* Set a fixed height for alignment */
+    box-sizing: border-box;
+}
+
+#login-form input[type="email"]::placeholder,
+#login-form input[type="password"]::placeholder {
+    color: #A0AEC0;
+}
+
+#login-form input[type="email"]:focus,
+#login-form input[type="password"]:focus {
+    outline: none;
+    border-color: #5E87FF;
+    box-shadow: 0 0 0 2px rgba(94, 135, 255, 0.3);
+}
+
+#login-form button {
+    font-family: 'Inter', sans-serif;
+    background-color: #3B3C40;
+    color: #E9ECEF;
+    border: none;
+    padding: 5px 10px; /* Further reduced padding */
+    border-radius: 3px; /* Slightly smaller border radius */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 0.8em; /* Further reduced font size */
+    white-space: nowrap;
+    height: 32px; /* Set a fixed height for alignment */
+    box-sizing: border-box;
+    line-height: normal; /* Ensure text is centered vertically */
+}
+
+#login-form button:hover {
+    background-color: #4A4B50;
+}
+
+#login-form button:active {
+    background-color: #555;
+}
+
+#forgot-password-btn {
+    background-color: #555;
+    margin-left: 0.3rem; /* Keep a small margin if needed */
+}
+
+#forgot-password-btn:hover {
+    background-color: #666;
+}
+
+/* Ensure the auth section itself doesn't have conflicting padding */
+#auth-section {
+    padding: 0.5rem; /* Adjust as needed */
+}
+
+
 #editor {
     background-color: #2E2E33;
     color: #E9ECEF;
