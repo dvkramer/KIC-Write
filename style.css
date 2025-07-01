@@ -150,6 +150,33 @@ body {
     color: #E9ECEF;
 }
 
+/* Quill Editor Area Adjustments for Height and Clickability */
+#editor .ql-container.ql-snow {
+    border: none; /* Remove Quill's default border if any from snow theme */
+    font-family: inherit; /* Inherit Fira Code from #editor */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Fill #editor's height */
+}
+
+#editor .ql-editor {
+    padding: 0; /* #editor div already has padding, ql-editor uses that space */
+    flex-grow: 1; /* Fill the .ql-container, effectively inheriting min-height */
+    font-size: 1rem; /* Base font size for editor content */
+    line-height: 1.6; /* Readability */
+    width: 100%; /* Take full width of container */
+}
+
+/* Style Quill placeholder text for dark theme */
+#editor .ql-editor.ql-blank::before {
+    color: #A0AEC0; /* Secondary text color, light gray */
+    font-style: normal; /* Override Quill's default italic placeholder if desired */
+    /* Ensure it's positioned correctly if default styles are off */
+    /* position: absolute; left: 15px; top: 12px; (Quill defaults, adjust if #editor padding changed this) */
+    /* With our #editor padding and .ql-editor padding:0, placeholder should align correctly. */
+}
+
+
 /* Ensure .controls are above .ql-toolbar within the flex container */
 .sticky-toolbar-wrapper .controls {
     order: -1; /* Moves controls before the toolbar in flex layout */

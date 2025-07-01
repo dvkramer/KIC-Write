@@ -132,4 +132,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Autoscroll to follow caret
+    if (window.quill) {
+        window.quill.on('editor-change', function(eventName, ...args) {
+            if (eventName === 'selection-change') {
+                const [range, oldRange, source] = args;
+                if (range) {
+                    const cursorBounds = window.quill.getBounds(range.index, range.length);
+                    const editorTop = window.quill.root.parentElement.getBoundingClientRect().top; // #editor or .ql-container
+
+                    // Calculate cursor position relative to viewport
+                    const cursorViewportTop = editorTop + cursorBounds.top;
+                    const cursorViewportBottom = editorTop + cursorBounds.bottom;
+
+                    const viewportHeight = window.innerHeight;
+                    const scrollBuffer = 50; // Pixels from bottom edge to trigger scroll
+
+                    // If cursor is close to the bottom edge of viewport or below it
+                    if (cursorViewportBottom > viewportHeight - scrollBuffer) {
+                        window.scrollBy({
+                            top: cursorViewportBottom - (viewportHeight - scrollBuffer) + 10, // Scroll just enough to bring it into view + a little extra
+                            behavior: 'smooth'
+                        });
+                    }
+                    // Optional: scroll up if cursor goes near top (less common for typing)
+                    // else if (cursorViewportTop < scrollBuffer) {
+                    //     window.scrollBy({
+                    //         top: cursorViewportTop - scrollBuffer - 10,
+                    //         behavior: 'smooth'
+                    //     });
+                    // }
+                }
+            }
+        });
+    }
 });
