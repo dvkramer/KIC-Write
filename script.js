@@ -53,9 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastScrollTop = 0;
     window.addEventListener('scroll', () => {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop && scrollTop > appHeader.offsetHeight / 2) { if (appContainer) appContainer.classList.add('logo-hidden'); } 
-        else if (scrollTop <= 5) { if (appContainer) appContainer.classList.remove('logo-hidden'); }
-        lastScrollTostop = scrollTop <= 0 ? 0 : scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > appHeader.offsetHeight / 2) {
+            if (appContainer) appContainer.classList.add('logo-hidden');
+        } else if (scrollTop <= 5) {
+            if (appContainer) appContainer.classList.remove('logo-hidden');
+        }
+        // CORRECTED TYPO HERE
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
 
     // File Operations Elements
@@ -65,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadDvkInput = document.getElementById('load-dvk-input');
     const exportHtmlBtn = document.getElementById('export-html-btn');
     
-    // NEW: Authentication and Cloud Elements
+    // Authentication and Cloud Elements
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email-input');
     const passwordInput = document.getElementById('password-input');
@@ -77,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveCloudBtn = document.getElementById('save-cloud-btn');
     const loadCloudBtn = document.getElementById('load-cloud-btn');
 
-    // --- Authentication Listeners ---
+    // Authentication Listeners
     signupBtn.addEventListener('click', () => createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     loginBtn.addEventListener('click', () => signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     logoutBtn.addEventListener('click', () => signOut(auth));
@@ -142,11 +146,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // NEW: Cloud File Operations
+    // Cloud File Operations
     if (saveCloudBtn) {
         saveCloudBtn.addEventListener('click', async () => {
             const user = auth.currentUser;
-            if (!user) return; // Should be disabled, but a good safeguard
+            if (!user) return;
             const fileName = window.prompt("Save CLOUD document as:", "My Cloud Doc");
             if (!fileName || !fileName.trim()) return;
             try {
@@ -159,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loadCloudBtn) {
         loadCloudBtn.addEventListener('click', async () => {
             const user = auth.currentUser;
-            if (!user) return; // Should be disabled, but a good safeguard
+            if (!user) return;
             const q = query(collection(db, "files"), where("authorId", "==", user.uid), orderBy("createdAt", "desc"));
             try {
                 const querySnapshot = await getDocs(q);
