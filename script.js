@@ -1,6 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Kramer Intelligent Cloud Write Initialized");
 
+    // Set emoji favicon
+    try {
+        const favicon = document.getElementById('dynamic-favicon');
+        const emoji = '☁️';
+        // Adjust viewBox, x, y, and font-size as needed.
+        // A 16x16 viewBox is common for favicons.
+        // y="14" or y="13" often works well for standard emojis on a 16x16 grid.
+        // font-size might need to be close to the viewBox height.
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><text x="0" y="13.5" font-size="14">${emoji}</text></svg>`;
+        const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+        if (favicon) {
+            favicon.href = dataUrl;
+        } else {
+            console.error("Favicon element #dynamic-favicon not found.");
+        }
+    } catch (e) {
+        console.error("Error setting emoji favicon:", e);
+    }
+
     // Initialize Quill editor
     const editorElement = document.getElementById('editor');
     if (editorElement) {
