@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exportHtmlBtn) {
         exportHtmlBtn.addEventListener('click', () => {
             if (window.quill) {
-                let fileName = window.prompt("Enter filename for .html (e.g., myPage):", "document");
+                let fileName = window.prompt("Export as:", "document");
                 if (fileName === null || fileName.trim() === "") {
                     console.log("Export operation cancelled by user or empty filename.");
                     return; // Abort if user cancels or enters empty filename
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saveDvkBtn) {
         saveDvkBtn.addEventListener('click', () => {
             if (window.quill) {
-                let fileName = window.prompt("Enter filename for .dvk (e.g., myDocument):", "document");
+                let fileName = window.prompt("Save as:", "document");
                 if (fileName === null || fileName.trim() === "") {
                     console.log("Save operation cancelled by user or empty filename.");
                     return; // Abort if user cancels or enters empty filename
