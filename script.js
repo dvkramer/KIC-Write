@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCxjfQS2D5-2QmlDwX05F6lHq8QTQTccqI",
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     const saveCloudBtn = document.getElementById('save-cloud-btn');
     const loadCloudBtn = document.getElementById('load-cloud-btn');
+    const deleteCloudBtn = document.getElementById('delete-cloud-btn'); // New delete button element
 
     // --- Authentication Listeners ---
     signupBtn.addEventListener('click', () => createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
@@ -90,11 +91,13 @@ document.addEventListener('DOMContentLoaded', () => {
             userEmailSpan.textContent = user.email;
             saveCloudBtn.disabled = false;
             loadCloudBtn.disabled = false;
+            deleteCloudBtn.disabled = false; // Enable delete button on login
         } else {
             loginForm.style.display = 'block';
             userStatus.style.display = 'none';
             saveCloudBtn.disabled = true;
             loadCloudBtn.disabled = true;
+            deleteCloudBtn.disabled = true; // Disable delete button on logout
         }
     });
 
@@ -173,6 +176,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // NEW DELETE FROM CLOUD FUNCTION
+    if (deleteCloudBtn) {
+        deleteCloudBtn.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return; // Safeguard
+            const q = query(collection(db, "files"), where("authorId", "==", user.uid), orderBy("createdAt", "desc"));
+            try {
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) return alert("No cloud documents to delete.");
+                
+                const files = [];
+                querySnapshot.forEach(doc => files.push({ id: doc.id, ...doc.data() }));
+
+                let fileListString = "Enter the number of the file to DELETE:\n\n";
+                files.forEach((file, i) => fileListString += `${i + 1}. ${file.title}\n`);
+                const choice = parseInt(window.prompt(fileListString));
+
+                if (isNaN(choice) || choice < 1 || choice > files.length) {
+                    console.log("Invalid selection or deletion cancelled.");
+                    return;
+                }
+
+                const fileToDelete = files[choice - 1];
+                
+                // Add a confirmation step
+                const confirmed = window.confirm(`Are you sure you want to permanently delete "${fileToDelete.title}"? This cannot be undone.`);
+                
+                if (confirmed) {
+                    // Create a reference to the specific document and delete it
+                    const docRef = doc(db, 'files', fileToDelete.id);
+                    await deleteDoc(docRef);
+                    alert(`'${fileToDelete.title}' has been deleted.`);
+                } else {
+                    alert("Deletion cancelled.");
+                }
+
+            } catch (e) {
+                console.error("Error deleting document: ", e);
+                alert("Could not delete document. See console for details.");
+            }
+        });
+    }
+
     // Autoscroll to follow caret
     if (window.quill) {
         window.quill.on('editor-change', function(eventName, ...args) {
@@ -180,25 +226,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const [range, oldRange, source] = args;
                 if (range) {
                     const cursorBounds = window.quill.getBounds(range.index, range.length);
-                    // window.quill.container is the .ql-container element (which is #editor in this case)
                     const editorRect = window.quill.container.getBoundingClientRect();
                     const editorTop = editorRect.top;
-
-                    // Calculate cursor position relative to viewport
                     const cursorViewportTop = editorTop + cursorBounds.top;
                     const cursorViewportBottom = editorTop + cursorBounds.bottom;
-
                     const viewportHeight = window.innerHeight;
-                    const scrollBuffer = 50; // Pixels from bottom edge to trigger scroll
-
-                    // If cursor is close to the bottom edge of viewport or below it
+                    const scrollBuffer = 50;
                     if (cursorViewportBottom > viewportHeight - scrollBuffer) {
                         window.scrollBy({
-                            top: cursorViewportBottom - (viewportHeight - scrollBuffer) + 10, // Scroll just enough to bring it into view + a little extra
+                            top: cursorViewportBottom - (viewportHeight - scrollBuffer) + 10,
                             behavior: 'smooth'
                         });
                     }
-                    // Optional: scroll up if cursor goes near top (less common for typing) - UNCOMMENTED AS REQUESTED
                     else if (cursorViewportTop < scrollBuffer) {
                         window.scrollBy({
                             top: cursorViewportTop - scrollBuffer - 10,
