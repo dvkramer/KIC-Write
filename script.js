@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Autoscroll to follow caret - RESTORED VERBATIM FROM YOUR PROVIDED CODE
+    // Autoscroll to follow caret
     if (window.quill) {
         window.quill.on('editor-change', function(eventName, ...args) {
             if (eventName === 'selection-change') {
@@ -198,13 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             behavior: 'smooth'
                         });
                     }
-                    // Optional: scroll up if cursor goes near top (less common for typing)
-                    // else if (cursorViewportTop < scrollBuffer) {
-                    //     window.scrollBy({
-                    //         top: cursorViewportTop - scrollBuffer - 10,
-                    //         behavior: 'smooth'
-                    //     });
-                    // }
+                    // Optional: scroll up if cursor goes near top (less common for typing) - UNCOMMENTED AS REQUESTED
+                    else if (cursorViewportTop < scrollBuffer) {
+                        window.scrollBy({
+                            top: cursorViewportTop - scrollBuffer - 10,
+                            behavior: 'smooth'
+                        });
+                    }
                 }
             }
         });
