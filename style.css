@@ -265,18 +265,18 @@ body {
 
     .controls {
         flex-direction: row;
-        flex-wrap: wrap;
-        gap: 8px;
+        flex-wrap: nowrap;
+        gap: 4px;
         justify-content: center;
     }
 
     .controls button {
         flex: 1;
-        min-width: 70px;
-        max-width: calc(50% - 4px);
+        min-width: 0;
+        max-width: none;
         margin-bottom: 0;
-        font-size: 0.85em;
-        padding: 8px 6px;
+        font-size: 0.75em;
+        padding: 8px 4px;
     }
 
     #editor {
