@@ -53,8 +53,8 @@ body {
     top: 0;
     z-index: 200;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    overflow: visible; /* <-- ADD THIS LINE */
-
+    /* CRITICAL: Allow overflow for dropdowns */
+    overflow: visible !important;
 }
 
 .controls {
@@ -95,8 +95,7 @@ body {
     margin-bottom: 50px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    position: relative; /* <-- ADD THIS LINE */
-    z-index: 1;         /* <-- ADD THIS LINE */
+    /* REMOVED FLEXBOX PROPERTIES */
 }
 
 #editor {
@@ -127,8 +126,41 @@ body {
     width: 100%;
     max-width: 800px;
     box-sizing: border-box;
-    /* Fix toolbar overflow on mobile */
-    overflow-x: auto;
+    /* CRITICAL: Remove overflow constraints that clip dropdowns */
+    overflow: visible !important;
+    position: relative;
+}
+
+/* CRITICAL: Fix for Quill dropdown positioning */
+.ql-toolbar .ql-picker {
+    position: relative;
+}
+
+.ql-toolbar .ql-picker-options {
+    position: absolute !important;
+    z-index: 1000 !important;
+    top: 100% !important;
+    left: 0 !important;
+    background-color: #2E2E33 !important;
+    border: 1px solid #4A4B50 !important;
+    border-radius: 4px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    overflow-x: visible !important;
+    min-width: 120px !important;
+}
+
+.ql-toolbar .ql-picker-item {
+    background-color: #2E2E33 !important;
+    color: #E9ECEF !important;
+    padding: 8px 12px !important;
+    border: none !important;
+}
+
+.ql-toolbar .ql-picker-item:hover {
+    background-color: #4A4B50 !important;
+    color: #FFFFFF !important;
 }
 
 /* Style Quill icons for dark theme */
@@ -190,6 +222,8 @@ body {
 @media (max-width: 768px) {
     .sticky-toolbar-wrapper {
         padding: 10px;
+        /* CRITICAL: Maintain overflow visible on mobile */
+        overflow: visible !important;
     }
 
     .controls {
@@ -220,7 +254,8 @@ body {
     /* Fix Quill toolbar on mobile */
     .sticky-toolbar-wrapper .ql-toolbar {
         padding: 6px;
-        white-space: nowrap;
+        /* CRITICAL: No white-space nowrap that can cause issues */
+        overflow: visible !important;
     }
 
     .ql-toolbar .ql-formats {
