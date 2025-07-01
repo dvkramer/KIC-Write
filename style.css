@@ -239,15 +239,13 @@ body {
 
 .footer-contact {
     text-align: center;
-    padding: 5px 0; /* Reduced padding to make it more compact */
+    padding: 10px 0; /* Adjusted padding for spacing */
     font-size: 0.8em;
     color: #A0AEC0; /* Greyish text color */
     width: 100%;
-    position: fixed; /* Fixed position at the bottom */
-    bottom: 0;
-    left: 0;
-    background-color: #1A1B1E; /* Match body background to blend in */
-    z-index: 300; /* Ensure it's above other content if necessary */
+    max-width: 800px; /* Align with app-card width */
+    margin: 0 auto; /* Center the contact info if app-container is wider */
+    background-color: #1A1B1E; /* Match body background */
 }
 
 .footer-contact p {
@@ -269,5 +267,5 @@ body {
     background-color: #1A1B1E; /* Main page background */
     color: #E9ECEF; /* Primary text color */
     line-height: 1.6;
-    padding-bottom: 30px; /* Add padding to the bottom of the body to make space for the fixed footer */
+    /* padding-bottom: 30px; /* No longer needed for fixed footer */
 }
