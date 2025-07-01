@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     ['clean'] // Button to remove formatting
                 ]
             },
-            placeholder: 'Start writing your document here...',
+            // Leading space added to placeholder for slight visual left padding adjustment.
+            placeholder: ' Start writing your document here...',
         });
 
         // Make quill instance globally accessible for other functions if needed, or pass it around.
