@@ -35,7 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editorElement) {
         const quill = new Quill(editorElement, {
             theme: 'snow',
-            modules: { toolbar: [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'align': [] }], ['link', 'image'], ['clean']] },
+            modules: { 
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }], 
+                    ['bold', 'italic', 'underline', 'strike'], 
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }], 
+                    [{ 'align': [] }], 
+                    ['link', 'image'], 
+                    ['clean']
+                ] 
+            },
             placeholder: ' Start writing your document here...',
         });
         window.quill = quill;
