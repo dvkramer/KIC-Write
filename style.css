@@ -99,7 +99,7 @@ body {
     background-color: #2E2E33; /* Editor background */
     color: #E9ECEF; /* Text color inside editor */
     font-family: 'Fira Code', monospace;
-    min-height: 60vh; /* Initial smaller height, will grow with content */
+    min-height: calc(100vh - 170px); /* Dynamically adjust to viewport, leaving space for toolbar, margins, and buffer */
     height: auto; /* Allow it to grow beyond min-height */
     padding: 20px;
     border-radius: 0 0 8px 8px; /* Rounded bottom corners if app-card has top radius */
