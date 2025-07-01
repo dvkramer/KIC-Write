@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KIC Write is a modern word processor for the web. Create, edit, save, and load documents seamlessly in your browser.">
+    <meta property="og:title" content="Kramer Intelligent Cloud Write">
+    <meta property="og:description" content="KIC Write is a modern word processor for the web. Create, edit, save, and load documents seamlessly in your browser.">
+    <meta property="og:url" content="https://kic-write.vercel.app">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://kic-write.vercel.app" />
+    <link rel="icon" id="dynamic-favicon" href="#">
+    <title>Kramer Intelligent Cloud Write</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Quill.js CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>☁️ Kramer Intelligent Cloud Write</h1>
+            <p>Part of Kramer Intelligent Cloud</p>
+        </header>
+
+        <div class="sticky-toolbar-wrapper">
+            <div class="controls">
+                <button id="new-file-btn">New File</button>
+                <button id="save-dvk-btn">Save (.dvk)</button>
+                <button id="load-dvk-btn">Load (.dvk)</button>
+                <button id="export-html-btn">Export (.html)</button>
+                <input type="file" id="load-dvk-input" accept=".dvk" style="display: none;">
+            </div>
+            <!-- Quill Toolbar will be moved here by JavaScript -->
+        </div>
+
+        <main class="app-card">
+            <div id="editor">
+                <!-- Quill Editor will be initialized here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Quill.js JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
