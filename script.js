@@ -33,25 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Quill editor
     const editorElement = document.getElementById('editor');
     if (editorElement) {
+        // MODIFICATION: Point the toolbar to the HTML container instead of defining it here.
+        // This is the correct way to use a separate/sticky toolbar.
         const quill = new Quill(editorElement, {
             theme: 'snow',
             modules: { 
-                toolbar: [
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }], 
-                    ['bold', 'italic', 'underline', 'strike'], 
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }], 
-                    [{ 'align': [] }], 
-                    ['link', 'image'], 
-                    ['clean']
-                ] 
+                toolbar: '#toolbar-container'
             },
             placeholder: ' Start writing your document here...',
         });
         window.quill = quill;
 
-        const quillToolbar = document.querySelector('.ql-toolbar');
-        const stickyToolbarWrapper = document.querySelector('.sticky-toolbar-wrapper');
-        if (quillToolbar && stickyToolbarWrapper) { stickyToolbarWrapper.appendChild(quillToolbar); } else { console.error("Quill toolbar or sticky wrapper not found for repositioning."); }
+        // MODIFICATION: This block is no longer needed and has been removed,
+        // as it was the cause of the broken header dropdown.
+        // Quill now correctly handles its own toolbar from initialization.
+
     } else {
         console.error("Editor element #editor not found.");
     }
