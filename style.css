@@ -145,9 +145,9 @@ body {
     border: 1px solid #4A4B50 !important;
     border-radius: 4px !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-    max-height: 200px !important;
-    overflow-y: auto !important;
-    overflow-x: visible !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
     min-width: 120px !important;
 }
 
