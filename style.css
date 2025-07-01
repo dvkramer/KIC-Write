@@ -299,3 +299,107 @@ body {
         writing-mode: horizontal-tb;
     }
 }
+
+/* Add these styles to your style.css file to fix the header dropdown */
+
+/* Fix Quill picker dropdowns (header, font, etc.) */
+.ql-toolbar .ql-picker {
+    color: #A0AEC0;
+}
+
+.ql-toolbar .ql-picker-label {
+    border: 1px solid #4A4B50;
+    background-color: #3B3C40;
+    color: #E9ECEF;
+    padding: 2px 8px;
+    border-radius: 3px;
+}
+
+.ql-toolbar .ql-picker-label:hover {
+    background-color: #4A4B50;
+    border-color: #5A5B60;
+}
+
+/* Style the dropdown options container */
+.ql-toolbar .ql-picker-options {
+    background-color: #2E2E33;
+    border: 1px solid #4A4B50;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    padding: 4px 0;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+/* Style individual dropdown items */
+.ql-toolbar .ql-picker-item {
+    color: #E9ECEF !important;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.ql-toolbar .ql-picker-item:hover {
+    background-color: #3B3C40;
+    color: #FFFFFF !important;
+}
+
+.ql-toolbar .ql-picker-item.ql-selected {
+    background-color: #4A90E2;
+    color: #FFFFFF !important;
+}
+
+/* Specific fixes for header picker */
+.ql-toolbar .ql-header .ql-picker-label::before {
+    content: "Normal";
+}
+
+.ql-toolbar .ql-header .ql-picker-label[data-value="1"]::before {
+    content: "Heading 1";
+}
+
+.ql-toolbar .ql-header .ql-picker-label[data-value="2"]::before {
+    content: "Heading 2";
+}
+
+.ql-toolbar .ql-header .ql-picker-label[data-value="3"]::before {
+    content: "Heading 3";
+}
+
+/* Ensure header picker items show proper text */
+.ql-toolbar .ql-header .ql-picker-item[data-value="1"]::before {
+    content: "Heading 1";
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.ql-toolbar .ql-header .ql-picker-item[data-value="2"]::before {
+    content: "Heading 2";
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.ql-toolbar .ql-header .ql-picker-item[data-value="3"]::before {
+    content: "Heading 3";
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.ql-toolbar .ql-header .ql-picker-item:not([data-value])::before {
+    content: "Normal";
+}
+
+/* Fix for mobile devices */
+@media (max-width: 768px) {
+    .ql-toolbar .ql-picker-options {
+        position: fixed;
+        z-index: 10000;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    
+    .ql-toolbar .ql-picker-item {
+        min-height: 44px; /* Touch-friendly size */
+        display: flex;
+        align-items: center;
+    }
+}
