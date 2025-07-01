@@ -7,9 +7,12 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #1A1B1E; /* Main page background */
-    color: #E9ECEF; /* Primary text color */
+    background-color: #1A1B1E;
+    color: #E9ECEF;
     line-height: 1.6;
+    /* Fix mobile viewport issues */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
 }
 
 .app-container {
@@ -17,15 +20,16 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
+    width: 100%;
 }
 
 .app-header {
     width: 100%;
     padding: 20px;
     text-align: center;
-    background-color: #1A1B1E; /* Same as body, or could be slightly different if desired */
+    background-color: #1A1B1E;
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    z-index: 100; /* Ensure it's above other content initially */
+    z-index: 100;
 }
 
 .app-header h1 {
@@ -35,33 +39,31 @@ body {
 
 .app-header p {
     font-size: 0.9em;
-    color: #A0AEC0; /* Secondary text color */
+    color: #A0AEC0;
 }
 
 .sticky-toolbar-wrapper {
     width: 100%;
-    background-color: #25262B; /* Card element background for the sticky bar */
-    padding: 10px 0;
+    background-color: #25262B;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: sticky;
-    top: 0; /* Will stick to the top */
-    z-index: 200; /* Higher than app-header when it's scrolled away */
+    top: 0;
+    z-index: 200;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    /* Initially, this wrapper might be empty or just have controls,
-       JS will move .ql-toolbar here.
-       When logo is hidden, this will be the top-most element. */
 }
 
 .controls {
     display: flex;
     gap: 10px;
-    margin-bottom: 10px; /* Space between controls and Quill toolbar */
-    padding: 0 20px; /* Add some padding to the controls bar */
+    margin-bottom: 10px;
+    padding: 0 10px;
     width: 100%;
-    max-width: 800px; /* Align with editor width */
+    max-width: 800px;
     justify-content: center;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .controls button {
@@ -73,58 +75,66 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    white-space: nowrap; /* Prevent button text wrapping */
+    /* Ensure buttons are touchable on mobile */
+    min-height: 44px;
+    min-width: 44px;
 }
 
 .controls button:hover {
     background-color: #4A4B50;
 }
 
-/* Quill Toolbar placeholder - will be styled by Quill's CSS and our overrides */
-/* We will ensure .ql-toolbar is moved into .sticky-toolbar-wrapper by JS */
-/* .ql-toolbar will have its own background, matching .sticky-toolbar-wrapper or #2E2E33 */
-
 .app-card {
-    background-color: #25262B; /* Card element background */
+    background-color: #25262B;
     width: 100%;
-    max-width: 800px; /* Typical document width */
-    margin-top: 20px; /* Space below the sticky toolbar */
-    margin-bottom: 50px; /* Space at the bottom */
+    max-width: 800px;
+    margin-top: 20px;
+    margin-bottom: 50px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    display: flex; /* To make the editor container take full height */
+    /* Keep flex on desktop, remove on mobile */
+    display: flex;
     flex-direction: column;
 }
 
 #editor {
-    background-color: #2E2E33; /* Editor background */
-    color: #E9ECEF; /* Text color inside editor */
+    background-color: #2E2E33;
+    color: #E9ECEF;
     font-family: 'Fira Code', monospace;
-    min-height: calc(93vh - 250px); /* Editor height scales at 93% of viewport height, adjusted by a specific offset */
-    height: auto; /* Allow it to grow beyond min-height */
+    min-height: calc(93vh - 250px); /* Restore original desktop height */
+    height: auto;
     padding: 20px;
-    border-radius: 0 0 8px 8px; /* Rounded bottom corners if app-card has top radius */
-    outline: none; /* Remove browser default focus outline */
-    flex-grow: 1; /* Allow editor to grow */
-    display: flex; /* Make #editor a flex container for .ql-container */
-    flex-direction: column; /* Stack .ql-container vertically */
+    border-radius: 0 0 8px 8px;
+    outline: none;
+    /* Keep desktop flex behavior, override on mobile */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /* Ensure proper text direction */
+    direction: ltr;
+    writing-mode: horizontal-tb;
 }
 
 /* When logo is hidden */
 .logo-hidden .app-header {
     transform: translateY(-100%);
     opacity: 0;
-    pointer-events: none; /* Prevent interaction when hidden */
+    pointer-events: none;
 }
 
 /* Quill Toolbar Customization */
 .sticky-toolbar-wrapper .ql-toolbar {
-    background-color: #2E2E33; /* Match editor or a distinct toolbar shade */
-    border: none; /* Remove Quill's default border */
-    border-radius: 4px; /* Optional: rounded corners for the toolbar */
+    background-color: #2E2E33;
+    border: none;
+    border-radius: 4px;
     padding: 8px;
     width: 100%;
-    max-width: 800px; /* Align with editor width */
-    box-sizing: border-box; /* Ensure padding doesn't expand it beyond max-width */
+    max-width: 800px;
+    box-sizing: border-box;
+    /* Fix toolbar overflow on mobile */
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 /* Style Quill icons for dark theme */
@@ -153,86 +163,134 @@ body {
     color: #E9ECEF;
 }
 
-/* Quill Editor Area Adjustments for Height and Clickability */
+/* Fix Quill container for mobile */
 #editor .ql-container.ql-snow {
-    border: none; /* Remove Quill's default border if any from snow theme */
-    font-family: inherit; /* Inherit Fira Code from #editor */
+    border: none;
+    font-family: inherit;
+    /* Keep desktop flex, remove on mobile */
     display: flex;
     flex-direction: column;
-    flex-grow: 1; /* Fill #editor's height */
+    flex-grow: 1;
 }
 
 #editor .ql-editor {
-    padding: 0; /* #editor div already has padding, ql-editor uses that space */
-    flex-grow: 1; /* Fill the .ql-container, effectively inheriting min-height */
-    font-size: 1rem; /* Base font size for editor content */
-    line-height: 1.6; /* Readability */
-    width: 100%; /* Take full width of container */
-    min-height: initial; /* Reset min-height if it inherits something too large */
-    padding-bottom: 50px; /* Give some space at the end for autoscroll visibility */
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1.6;
+    width: 100%;
+    min-height: 50vh;
+    padding-bottom: 50px;
+    /* Ensure proper text rendering on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Style Quill placeholder text for dark theme */
 #editor .ql-editor.ql-blank::before {
-    color: #A0AEC0; /* Secondary text color, light gray */
-    font-style: normal; /* Override Quill's default italic placeholder if desired */
-    /* Ensure it's positioned correctly if default styles are off */
-    /* position: absolute; left: 15px; top: 12px; (Quill defaults, adjust if #editor padding changed this) */
-    /* With our #editor padding and .ql-editor padding:0, placeholder should align correctly. */
+    color: #A0AEC0;
+    font-style: normal;
 }
 
-
-/* Ensure .controls are above .ql-toolbar within the flex container */
 .sticky-toolbar-wrapper .controls {
-    order: -1; /* Moves controls before the toolbar in flex layout */
-    width: 100%; /* Ensure it takes full width available in the flex column */
-    max-width: 800px; /* Align with editor width */
-    justify-content: center; /* Re-center buttons if they don't fill width */
+    width: 100%;
+    max-width: 800px;
+    justify-content: center;
 }
 
-
-/* Responsive Design (Basic Example) */
+/* Mobile-specific fixes */
 @media (max-width: 768px) {
     .sticky-toolbar-wrapper {
-        padding-left: 10px; /* Add side padding to the wrapper */
-        padding-right: 10px;
+        padding: 10px;
     }
 
     .controls {
-        flex-direction: column;
-        align-items: stretch; /* Make buttons full width */
-        padding: 0; /* Remove specific padding from controls, wrapper handles it */
-        /* gap: 0; /* Reset gap if it was set, margin on buttons is used */
+        flex-direction: row; /* Keep horizontal on tablets */
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0;
+        justify-content: center;
     }
 
     .controls button {
-        width: 100%;
-        margin-bottom: 8px; /* Consistent spacing between stacked buttons */
-    }
-
-    .controls button:last-child {
-        margin-bottom: 10px; /* Space between the last control button and the Quill toolbar */
+        flex: 1;
+        min-width: 80px;
+        max-width: 150px;
+        font-size: 0.9em;
     }
 
     .app-card {
-        margin-left: 10px; /* Reduce side margins for the main content card */
-        margin-right: 10px;
-        width: auto;
+        margin: 10px;
+        border-radius: 8px;
+        /* Remove flex on mobile to fix Quill issues */
+        display: block;
     }
 
     #editor {
-        min-height: calc(100vh - 250px); /* Adjust for stacked controls */
+        min-height: 60vh;
+        padding: 15px;
+        /* Remove flex properties on mobile */
+        display: block;
+        flex-grow: unset;
+    }
+
+    /* Remove flex from Quill container on mobile */
+    #editor .ql-container.ql-snow {
+        display: block;
+        flex-direction: unset;
+        flex-grow: unset;
+    }
+
+    #editor .ql-editor {
+        flex-grow: unset;
+    }
+
+    /* Fix Quill toolbar on mobile */
+    .sticky-toolbar-wrapper .ql-toolbar {
+        padding: 6px;
+        white-space: nowrap;
+    }
+
+    .ql-toolbar .ql-formats {
+        margin-right: 8px;
     }
 }
 
 @media (max-width: 480px) {
     .app-header h1 {
-        font-size: 1.5em;
+        font-size: 1.4em;
     }
     .app-header p {
         font-size: 0.8em;
     }
+
+    .controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .controls button {
+        width: 100%;
+        max-width: none;
+        margin-bottom: 0;
+    }
+
     #editor {
-        padding: 15px;
+        min-height: 50vh;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    /* Ensure toolbar buttons are accessible on small screens */
+    .ql-toolbar button {
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    /* Fix any remaining text direction issues */
+    .ql-editor p,
+    .ql-editor div,
+    .ql-editor span {
+        direction: ltr;
+        writing-mode: horizontal-tb;
     }
 }
