@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -88,6 +88,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveCloudBtn = document.getElementById('save-cloud-btn');
     const loadCloudBtn = document.getElementById('load-cloud-btn');
     const deleteCloudBtn = document.getElementById('delete-cloud-btn'); // New delete button element
+
+    // --- ADD THIS NEW CODE ---
+    const forgotPasswordBtn = document.getElementById('forgot-password-btn');
+
+    if (forgotPasswordBtn) {
+        forgotPasswordBtn.addEventListener('click', () => {
+            const email = emailInput.value;
+            if (!email) {
+                alert("Please enter your email address to reset your password.");
+                return;
+            }
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    alert("Password reset email sent! Please check your inbox.");
+                })
+                .catch((error) => {
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    }
+    // --- END OF NEW CODE ---
 
     // --- Authentication Listeners ---
     signupBtn.addEventListener('click', () => createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
