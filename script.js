@@ -201,7 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const [range, oldRange, source] = args;
                 if (range) {
                     const cursorBounds = window.quill.getBounds(range.index, range.length);
-                    const editorTop = window.quill.root.parentElement.getBoundingClientRect().top; // #editor or .ql-container
+                    // window.quill.container is the .ql-container element (which is #editor in this case)
+                    const editorRect = window.quill.container.getBoundingClientRect();
+                    const editorTop = editorRect.top;
 
                     // Calculate cursor position relative to viewport
                     const cursorViewportTop = editorTop + cursorBounds.top;
