@@ -104,6 +104,8 @@ body {
     border-radius: 0 0 8px 8px; /* Rounded bottom corners if app-card has top radius */
     outline: none; /* Remove browser default focus outline */
     flex-grow: 1; /* Allow editor to grow */
+    display: flex; /* Make #editor a flex container for .ql-container */
+    flex-direction: column; /* Stack .ql-container vertically */
 }
 
 /* When logo is hidden */
