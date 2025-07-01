@@ -33,21 +33,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Quill editor
     const editorElement = document.getElementById('editor');
     if (editorElement) {
-        // MODIFICATION: Point the toolbar to the HTML container instead of defining it here.
-        // This is the correct way to use a separate/sticky toolbar.
         const quill = new Quill(editorElement, {
             theme: 'snow',
             modules: { 
-                toolbar: '#toolbar-container'
+                toolbar: [
+                    // REVERTED: Changed back to the original header configuration that was working.
+                    [{ 'header': [1, 2, 3, false] }], 
+                    ['bold', 'italic', 'underline', 'strike'], 
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }], 
+                    [{ 'align': [] }], 
+                    ['link', 'image'], 
+                    ['clean']
+                ] 
             },
             placeholder: ' Start writing your document here...',
         });
         window.quill = quill;
 
-        // MODIFICATION: This block is no longer needed and has been removed,
-        // as it was the cause of the broken header dropdown.
-        // Quill now correctly handles its own toolbar from initialization.
-
+        // REINSTATED: This block moves the toolbar, as it was in your working code.
+        const quillToolbar = document.querySelector('.ql-toolbar');
+        const stickyToolbarWrapper = document.querySelector('.sticky-toolbar-wrapper');
+        if (quillToolbar && stickyToolbarWrapper) { stickyToolbarWrapper.appendChild(quillToolbar); } else { console.error("Quill toolbar or sticky wrapper not found for repositioning."); }
     } else {
         console.error("Editor element #editor not found.");
     }
@@ -205,11 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const fileToDelete = files[choice - 1];
                 
-                // Add a confirmation step
                 const confirmed = window.confirm(`Are you sure you want to permanently delete "${fileToDelete.title}"? This cannot be undone.`);
                 
                 if (confirmed) {
-                    // Create a reference to the specific document and delete it
                     const docRef = doc(db, 'files', fileToDelete.id);
                     await deleteDoc(docRef);
                     alert(`'${fileToDelete.title}' has been deleted.`);
