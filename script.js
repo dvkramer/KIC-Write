@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveDvkBtn = document.getElementById('save-dvk-btn');
     const loadDvkBtn = document.getElementById('load-dvk-btn');
     const loadDvkInput = document.getElementById('load-dvk-input');
+    const exportHtmlBtn = document.getElementById('export-html-btn');
 
     // New File
     if (newFileBtn) {
@@ -76,6 +77,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("New file created (editor cleared).");
             } else {
                 console.error("Quill editor not found for new file operation.");
+            }
+        });
+    }
+
+    // Export (.html)
+    if (exportHtmlBtn) {
+        exportHtmlBtn.addEventListener('click', () => {
+            if (window.quill) {
+                const content = window.quill.root.innerHTML; // Get HTML content
+                const blob = new Blob([content], { type: 'text/html' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'document.html'; // Default filename
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(a.href); // Clean up
+                console.log("Document exported as document.html");
+            } else {
+                console.error("Quill editor not found for export operation.");
             }
         });
     }
