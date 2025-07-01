@@ -53,12 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastScrollTop = 0;
     window.addEventListener('scroll', () => {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop && scrollTop > appHeader.offsetHeight / 2) {
-            if (appContainer) appContainer.classList.add('logo-hidden');
-        } else if (scrollTop <= 5) {
-            if (appContainer) appContainer.classList.remove('logo-hidden');
-        }
-        // CORRECTED TYPO HERE
+        if (scrollTop > lastScrollTop && scrollTop > appHeader.offsetHeight / 2) { if (appContainer) appContainer.classList.add('logo-hidden'); } 
+        else if (scrollTop <= 5) { if (appContainer) appContainer.classList.remove('logo-hidden'); }
         lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
 
@@ -81,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveCloudBtn = document.getElementById('save-cloud-btn');
     const loadCloudBtn = document.getElementById('load-cloud-btn');
 
-    // Authentication Listeners
+    // --- Authentication Listeners ---
     signupBtn.addEventListener('click', () => createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     loginBtn.addEventListener('click', () => signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     logoutBtn.addEventListener('click', () => signOut(auth));
@@ -103,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- File Operations ---
-    // UNTOUCHED: Your original local file logic
     
     // New File
     if (newFileBtn) newFileBtn.addEventListener('click', () => window.quill.setContents([]));
@@ -178,16 +173,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Autoscroll to follow caret
+    // Autoscroll to follow caret - RESTORED VERBATIM FROM YOUR PROVIDED CODE
     if (window.quill) {
-        window.quill.on('selection-change', (range) => {
-            if (range) {
-                const cursorBounds = window.quill.getBounds(range.index);
-                const editorTop = window.quill.container.getBoundingClientRect().top;
-                const cursorViewportBottom = editorTop + cursorBounds.bottom;
-                const scrollBuffer = 50;
-                if (cursorViewportBottom > window.innerHeight - scrollBuffer) {
-                    window.scrollBy({ top: cursorViewportBottom - (window.innerHeight - scrollBuffer), behavior: 'smooth' });
+        window.quill.on('editor-change', function(eventName, ...args) {
+            if (eventName === 'selection-change') {
+                const [range, oldRange, source] = args;
+                if (range) {
+                    const cursorBounds = window.quill.getBounds(range.index, range.length);
+                    // window.quill.container is the .ql-container element (which is #editor in this case)
+                    const editorRect = window.quill.container.getBoundingClientRect();
+                    const editorTop = editorRect.top;
+
+                    // Calculate cursor position relative to viewport
+                    const cursorViewportTop = editorTop + cursorBounds.top;
+                    const cursorViewportBottom = editorTop + cursorBounds.bottom;
+
+                    const viewportHeight = window.innerHeight;
+                    const scrollBuffer = 50; // Pixels from bottom edge to trigger scroll
+
+                    // If cursor is close to the bottom edge of viewport or below it
+                    if (cursorViewportBottom > viewportHeight - scrollBuffer) {
+                        window.scrollBy({
+                            top: cursorViewportBottom - (viewportHeight - scrollBuffer) + 10, // Scroll just enough to bring it into view + a little extra
+                            behavior: 'smooth'
+                        });
+                    }
+                    // Optional: scroll up if cursor goes near top (less common for typing)
+                    // else if (cursorViewportTop < scrollBuffer) {
+                    //     window.scrollBy({
+                    //         top: cursorViewportTop - scrollBuffer - 10,
+                    //         behavior: 'smooth'
+                    //     });
+                    // }
                 }
             }
         });
