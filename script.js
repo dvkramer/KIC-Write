@@ -1,6 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Kramer Intelligent Cloud Write Initialized");
 
+    // Set emoji favicon
+    try {
+        const favicon = document.getElementById('dynamic-favicon');
+        const emoji = '☁️';
+        // Adjust viewBox, x, y, and font-size as needed.
+        // A 16x16 viewBox is common for favicons.
+        // y="14" or y="13" often works well for standard emojis on a 16x16 grid.
+        // font-size might need to be close to the viewBox height.
+        const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><text x="0" y="13.5" font-size="14">${emoji}</text></svg>`;
+        const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+        if (favicon) {
+            favicon.href = dataUrl;
+        } else {
+            console.error("Favicon element #dynamic-favicon not found.");
+        }
+    } catch (e) {
+        console.error("Error setting emoji favicon:", e);
+    }
+
     // Initialize Quill editor
     const editorElement = document.getElementById('editor');
     if (editorElement) {
@@ -85,16 +104,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exportHtmlBtn) {
         exportHtmlBtn.addEventListener('click', () => {
             if (window.quill) {
+                let fileName = window.prompt("Export as:", "document");
+                if (fileName === null || fileName.trim() === "") {
+                    console.log("Export operation cancelled by user or empty filename.");
+                    return; // Abort if user cancels or enters empty filename
+                }
+                // Ensure .html extension
+                if (!fileName.toLowerCase().endsWith('.html')) {
+                    fileName += '.html';
+                }
+
                 const content = window.quill.root.innerHTML; // Get HTML content
                 const blob = new Blob([content], { type: 'text/html' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = 'document.html'; // Default filename
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(a.href); // Clean up
-                console.log("Document exported as document.html");
+                console.log(`Document exported as ${fileName}`);
             } else {
                 console.error("Quill editor not found for export operation.");
             }
@@ -105,16 +134,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saveDvkBtn) {
         saveDvkBtn.addEventListener('click', () => {
             if (window.quill) {
+                let fileName = window.prompt("Save as:", "document");
+                if (fileName === null || fileName.trim() === "") {
+                    console.log("Save operation cancelled by user or empty filename.");
+                    return; // Abort if user cancels or enters empty filename
+                }
+                // Ensure .dvk extension
+                if (!fileName.toLowerCase().endsWith('.dvk')) {
+                    fileName += '.dvk';
+                }
+
                 const content = window.quill.root.innerHTML; // Get HTML content
                 const blob = new Blob([content], { type: 'text/html' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = 'document.dvk'; // Default filename
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(a.href); // Clean up
-                console.log("Document saved as document.dvk");
+                console.log(`Document saved as ${fileName}`);
             } else {
                 console.error("Quill editor not found for save operation.");
             }
@@ -162,7 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const [range, oldRange, source] = args;
                 if (range) {
                     const cursorBounds = window.quill.getBounds(range.index, range.length);
-                    const editorTop = window.quill.root.parentElement.getBoundingClientRect().top; // #editor or .ql-container
+                    // window.quill.container is the .ql-container element (which is #editor in this case)
+                    const editorRect = window.quill.container.getBoundingClientRect();
+                    const editorTop = editorRect.top;
 
                     // Calculate cursor position relative to viewport
                     const cursorViewportTop = editorTop + cursorBounds.top;

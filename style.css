@@ -99,7 +99,8 @@ body {
     background-color: #2E2E33; /* Editor background */
     color: #E9ECEF; /* Text color inside editor */
     font-family: 'Fira Code', monospace;
-    min-height: calc(100vh - 200px); /* Adjust based on header/toolbar heights */
+    min-height: calc(93vh - 250px); /* Editor height scales at 93% of viewport height, adjusted by a specific offset */
+    height: auto; /* Allow it to grow beyond min-height */
     padding: 20px;
     border-radius: 0 0 8px 8px; /* Rounded bottom corners if app-card has top radius */
     outline: none; /* Remove browser default focus outline */
@@ -167,6 +168,8 @@ body {
     font-size: 1rem; /* Base font size for editor content */
     line-height: 1.6; /* Readability */
     width: 100%; /* Take full width of container */
+    min-height: initial; /* Reset min-height if it inherits something too large */
+    padding-bottom: 50px; /* Give some space at the end for autoscroll visibility */
 }
 
 /* Style Quill placeholder text for dark theme */
