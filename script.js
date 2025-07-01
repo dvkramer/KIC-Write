@@ -1,32 +1,21 @@
-// =================================================================
-//  --- Firebase SDK Imports and Initialization ---
-// This block must be at the top of the file to handle module loading.
-// =================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCxjfQS2D5-2QmlDwX05F6lHq8QTQTccqI",
-  authDomain: "kic-write.firebaseapp.com",
-  projectId: "kic-write",
-  storageBucket: "kic-write.firebasestorage.app",
-  messagingSenderId: "850269194236",
-  appId: "1:850269194236:web:4772508285ad83947a5479",
-  measurementId: "G-KYQ609DJMP"
+    apiKey: "AIzaSyCxjfQS2D5-2QmlDwX05F6lHq8QTQTccqI",
+    authDomain: "kic-write.firebaseapp.com",
+    projectId: "kic-write",
+    storageBucket: "kic-write.firebasestorage.app",
+    messagingSenderId: "850269194236",
+    appId: "1:850269194236:web:4772508285ad83947a5479",
+    measurementId: "G-KYQ609DJMP"
 };
 
-// Initialize Firebase and get references to the services we'll use
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-
-// =================================================================
-//  --- Main Application Logic ---
-//  Your original code starts here, with Firebase integrated.
-// =================================================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log("Kramer Intelligent Cloud Write Initialized");
 
@@ -36,42 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const emoji = '☁️';
         const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><text x="0" y="13.5" font-size="14">${emoji}</text></svg>`;
         const dataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
-        if (favicon) {
-            favicon.href = dataUrl;
-        } else {
-            console.error("Favicon element #dynamic-favicon not found.");
-        }
+        if (favicon) { favicon.href = dataUrl; } else { console.error("Favicon element #dynamic-favicon not found."); }
     } catch (e) {
         console.error("Error setting emoji favicon:", e);
     }
 
     // Initialize Quill editor
     const editorElement = document.getElementById('editor');
-    const quill = new Quill(editorElement, {
-        theme: 'snow', // 'snow' is a built-in theme with a toolbar
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'align': [] }],
-                ['link', 'image'],
-                ['clean'] // Button to remove formatting
-            ]
-        },
-        placeholder: 'Log in to start writing...',
-    });
+    if (editorElement) {
+        const quill = new Quill(editorElement, {
+            theme: 'snow',
+            modules: { toolbar: [[{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline', 'strike'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], [{ 'align': [] }], ['link', 'image'], ['clean']] },
+            placeholder: ' Start writing your document here...',
+        });
+        window.quill = quill;
 
-    // Make quill instance globally accessible for other functions if needed, or pass it around.
-    window.quill = quill;
-
-    // Move the Quill toolbar to our custom sticky wrapper
-    const quillToolbar = document.querySelector('.ql-toolbar');
-    const stickyToolbarWrapper = document.querySelector('.sticky-toolbar-wrapper');
-    if (quillToolbar && stickyToolbarWrapper) {
-        stickyToolbarWrapper.appendChild(quillToolbar);
+        const quillToolbar = document.querySelector('.ql-toolbar');
+        const stickyToolbarWrapper = document.querySelector('.sticky-toolbar-wrapper');
+        if (quillToolbar && stickyToolbarWrapper) { stickyToolbarWrapper.appendChild(quillToolbar); } else { console.error("Quill toolbar or sticky wrapper not found for repositioning."); }
     } else {
-        console.error("Quill toolbar or sticky wrapper not found for repositioning.");
+        console.error("Editor element #editor not found.");
     }
 
     // Dynamic Sticky Header Logic
@@ -80,135 +53,124 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastScrollTop = 0;
     window.addEventListener('scroll', () => {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        if (scrollTop > lastScrollTop && scrollTop > appHeader.offsetHeight / 2) {
-            if (appContainer) appContainer.classList.add('logo-hidden');
-        } else if (scrollTop <= 5) {
-            if (appContainer) appContainer.classList.remove('logo-hidden');
-        }
-        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > appHeader.offsetHeight / 2) { if (appContainer) appContainer.classList.add('logo-hidden'); } 
+        else if (scrollTop <= 5) { if (appContainer) appContainer.classList.remove('logo-hidden'); }
+        lastScrollTostop = scrollTop <= 0 ? 0 : scrollTop;
     });
 
-    // --- Get DOM Elements (Originals + New Auth Elements) ---
+    // File Operations Elements
     const newFileBtn = document.getElementById('new-file-btn');
     const saveDvkBtn = document.getElementById('save-dvk-btn');
     const loadDvkBtn = document.getElementById('load-dvk-btn');
+    const loadDvkInput = document.getElementById('load-dvk-input');
     const exportHtmlBtn = document.getElementById('export-html-btn');
-    // Note: loadDvkInput is no longer needed for cloud functionality
-    const authContainer = document.getElementById('auth-container');
+    
+    // NEW: Authentication and Cloud Elements
+    const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email-input');
     const passwordInput = document.getElementById('password-input');
     const signupBtn = document.getElementById('signup-btn');
     const loginBtn = document.getElementById('login-btn');
-    const userControls = document.getElementById('user-controls');
-    const userEmailSpan = document.getElementById('user-email');
+    const userStatus = document.getElementById('user-status');
+    const userEmailSpan = document.getElementById('user-email-span');
     const logoutBtn = document.getElementById('logout-btn');
+    const saveCloudBtn = document.getElementById('save-cloud-btn');
+    const loadCloudBtn = document.getElementById('load-cloud-btn');
 
-    // --- Firebase Authentication Listeners ---
+    // --- Authentication Listeners ---
     signupBtn.addEventListener('click', () => createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     loginBtn.addEventListener('click', () => signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     logoutBtn.addEventListener('click', () => signOut(auth));
 
-    // This is the main controller for the UI based on login state.
+    // Manages UI state on login/logout
     onAuthStateChanged(auth, user => {
-        const allButtons = [newFileBtn, saveDvkBtn, loadDvkBtn, exportHtmlBtn];
-        if (user) { // User is LOGGED IN
-            authContainer.style.display = 'none';
-            userControls.style.display = 'block';
+        if (user) {
+            loginForm.style.display = 'none';
+            userStatus.style.display = 'block';
             userEmailSpan.textContent = user.email;
-            quill.enable();
-            quill.focus();
-            allButtons.forEach(btn => btn.disabled = false);
-        } else { // User is LOGGED OUT
-            authContainer.style.display = 'block';
-            userControls.style.display = 'none';
-            quill.setContents([]);
-            quill.disable();
-            allButtons.forEach(btn => btn.disabled = true);
+            saveCloudBtn.disabled = false;
+            loadCloudBtn.disabled = false;
+        } else {
+            loginForm.style.display = 'block';
+            userStatus.style.display = 'none';
+            saveCloudBtn.disabled = true;
+            loadCloudBtn.disabled = true;
         }
     });
 
-    // --- File Operations (with Save/Load upgraded for Cloud) ---
-
+    // --- File Operations ---
+    // UNTOUCHED: Your original local file logic
+    
     // New File
-    if (newFileBtn) {
-        newFileBtn.addEventListener('click', () => {
-            if (window.quill) {
-                window.quill.setContents([]); // Clears the editor
-                console.log("New file created (editor cleared).");
-            }
-        });
-    }
+    if (newFileBtn) newFileBtn.addEventListener('click', () => window.quill.setContents([]));
 
-    // Export (.html) - This remains a local download operation.
+    // Export (.html)
     if (exportHtmlBtn) {
         exportHtmlBtn.addEventListener('click', () => {
-            if (window.quill) {
-                let fileName = window.prompt("Export as:", "document.html");
-                if (!fileName || !fileName.trim()) return;
-                if (!fileName.toLowerCase().endsWith('.html')) fileName += '.html';
-                const blob = new Blob([window.quill.root.innerHTML], { type: 'text/html' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(a.href);
-            }
-        });
-    }
-
-    // UPGRADED: Save to Cloud
-    if (saveDvkBtn) {
-        saveDvkBtn.addEventListener('click', async () => {
-            const user = auth.currentUser;
-            if (!user) return alert("You must be logged in to save.");
-            const fileName = window.prompt("Save cloud document as:", "My Document");
+            let fileName = window.prompt("Export as:", "document.html");
             if (!fileName || !fileName.trim()) return;
-
-            try {
-                await addDoc(collection(db, "files"), {
-                    authorId: user.uid,
-                    title: fileName.trim(),
-                    content: window.quill.root.innerHTML,
-                    createdAt: new Date()
-                });
-                alert(`'${fileName}' saved to the cloud!`);
-            } catch (e) {
-                console.error("Error saving document: ", e);
-                alert("Could not save document. See console for details.");
-            }
+            if (!fileName.toLowerCase().endsWith('.html')) fileName += '.html';
+            const blob = new Blob([window.quill.root.innerHTML], { type: 'text/html' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName; a.click(); URL.revokeObjectURL(a.href);
         });
     }
 
-    // UPGRADED: Load from Cloud
-    if (loadDvkBtn) {
-        loadDvkBtn.addEventListener('click', async () => {
+    // Save (.dvk)
+    if (saveDvkBtn) {
+        saveDvkBtn.addEventListener('click', () => {
+            let fileName = window.prompt("Save as:", "document.dvk");
+            if (!fileName || !fileName.trim()) return;
+            if (!fileName.toLowerCase().endsWith('.dvk')) fileName += '.dvk';
+            const blob = new Blob([window.quill.root.innerHTML], { type: 'text/html' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fileName; a.click(); URL.revokeObjectURL(a.href);
+        });
+    }
+
+    // Load (.dvk) - Trigger file input
+    if (loadDvkBtn) loadDvkBtn.addEventListener('click', () => loadDvkInput.click());
+
+    // Load (.dvk) - Handle file selection
+    if (loadDvkInput) {
+        loadDvkInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => window.quill.root.innerHTML = e.target.result;
+                reader.readAsText(file);
+                event.target.value = null;
+            }
+        });
+    }
+    
+    // NEW: Cloud File Operations
+    if (saveCloudBtn) {
+        saveCloudBtn.addEventListener('click', async () => {
             const user = auth.currentUser;
-            if (!user) return alert("You must be logged in to load files.");
-            
+            if (!user) return; // Should be disabled, but a good safeguard
+            const fileName = window.prompt("Save CLOUD document as:", "My Cloud Doc");
+            if (!fileName || !fileName.trim()) return;
+            try {
+                await addDoc(collection(db, "files"), { authorId: user.uid, title: fileName.trim(), content: window.quill.root.innerHTML, createdAt: new Date() });
+                alert(`'${fileName}' saved to the cloud!`);
+            } catch (e) { console.error("Error saving to cloud: ", e); alert("Could not save to cloud."); }
+        });
+    }
+    
+    if (loadCloudBtn) {
+        loadCloudBtn.addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) return; // Should be disabled, but a good safeguard
             const q = query(collection(db, "files"), where("authorId", "==", user.uid), orderBy("createdAt", "desc"));
-            
             try {
                 const querySnapshot = await getDocs(q);
-                const files = [];
-                querySnapshot.forEach(doc => files.push({ id: doc.id, ...doc.data() }));
-
-                if (files.length === 0) return alert("No cloud documents found.");
-
-                let fileListString = "Enter the number of the file to load:\n\n";
+                if (querySnapshot.empty) return alert("No cloud documents found.");
+                const files = []; querySnapshot.forEach(doc => files.push({ id: doc.id, ...doc.data() }));
+                let fileListString = "Enter the number of the CLOUD file to load:\n\n";
                 files.forEach((file, i) => fileListString += `${i + 1}. ${file.title}\n`);
                 const choice = parseInt(window.prompt(fileListString));
-
                 if (isNaN(choice) || choice < 1 || choice > files.length) return;
-                
-                const selectedFile = files[choice - 1];
-                window.quill.root.innerHTML = selectedFile.content;
-                console.log(`Loaded '${selectedFile.title}'.`);
-            } catch (e) {
-                console.error("Error loading documents: ", e);
-                alert("Could not load documents. See console for details.");
-            }
+                window.quill.root.innerHTML = files[choice - 1].content;
+            } catch (e) { console.error("Error loading from cloud: ", e); alert("Could not load from cloud."); }
         });
     }
 
@@ -219,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cursorBounds = window.quill.getBounds(range.index);
                 const editorTop = window.quill.container.getBoundingClientRect().top;
                 const cursorViewportBottom = editorTop + cursorBounds.bottom;
-                const scrollBuffer = 50; // Pixels from bottom edge to trigger scroll
+                const scrollBuffer = 50;
                 if (cursorViewportBottom > window.innerHeight - scrollBuffer) {
                     window.scrollBy({ top: cursorViewportBottom - (window.innerHeight - scrollBuffer), behavior: 'smooth' });
                 }
