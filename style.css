@@ -264,14 +264,19 @@ body {
     }
 
     .controls {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
         gap: 8px;
+        justify-content: center;
     }
 
     .controls button {
-        width: 100%;
-        max-width: none;
+        flex: 1;
+        min-width: 70px;
+        max-width: calc(50% - 4px);
         margin-bottom: 0;
+        font-size: 0.85em;
+        padding: 8px 6px;
     }
 
     #editor {
