@@ -115,6 +115,21 @@ document.addEventListener('DOMContentLoaded', () => {
     loginBtn.addEventListener('click', () => signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value).catch(err => alert(err.message)));
     logoutBtn.addEventListener('click', () => signOut(auth));
 
+    // Function to handle 'Enter' key press in auth inputs
+    const handleAuthEnterKey = (event) => {
+        if (event.key === 'Enter') {
+            loginBtn.click(); // Programmatically click the login button
+        }
+    };
+
+    // Add event listeners for 'Enter' key on email and password inputs
+    if (emailInput) {
+        emailInput.addEventListener('keypress', handleAuthEnterKey);
+    }
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', handleAuthEnterKey);
+    }
+
     // Manages UI state on login/logout
     onAuthStateChanged(auth, user => {
         if (user) {
