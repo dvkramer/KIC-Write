@@ -93,27 +93,19 @@ body {
     margin-bottom: 50px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    /* Keep flex on desktop, remove on mobile */
-    display: flex;
-    flex-direction: column;
+    /* REMOVED FLEXBOX PROPERTIES */
 }
 
 #editor {
     background-color: #2E2E33;
     color: #E9ECEF;
     font-family: 'Fira Code', monospace;
-    min-height: calc(93vh - 250px); /* Restore original desktop height */
+    min-height: calc(93vh - 250px);
     height: auto;
     padding: 20px;
     border-radius: 0 0 8px 8px;
     outline: none;
-    /* Keep desktop flex behavior, override on mobile */
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    /* Ensure proper text direction */
-    direction: ltr;
-    writing-mode: horizontal-tb;
+    /* REMOVED FLEXBOX PROPERTIES */
 }
 
 /* When logo is hidden */
@@ -134,6 +126,7 @@ body {
     box-sizing: border-box;
     /* Fix toolbar overflow on mobile */
     overflow-x: auto;
+    overflow-y: hidden;
 }
 
 /* Style Quill icons for dark theme */
@@ -162,14 +155,9 @@ body {
     color: #E9ECEF;
 }
 
-/* Fix Quill container for mobile */
 #editor .ql-container.ql-snow {
     border: none;
     font-family: inherit;
-    /* Keep desktop flex, remove on mobile */
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
 }
 
 #editor .ql-editor {
@@ -220,20 +208,11 @@ body {
     .app-card {
         margin: 10px;
         border-radius: 8px;
-        /* Remove flex on mobile to fix Quill issues */
-        display: block;
     }
 
     #editor {
         min-height: 60vh;
         padding: 15px;
-        /* Remove flex properties on mobile */
-        display: block;
-        flex-grow: unset;
-    }
-
-    #editor .ql-editor {
-        flex-grow: unset;
     }
 
     /* Fix Quill toolbar on mobile */
