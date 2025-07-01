@@ -85,16 +85,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (exportHtmlBtn) {
         exportHtmlBtn.addEventListener('click', () => {
             if (window.quill) {
+                let fileName = window.prompt("Enter filename for .html (e.g., myPage):", "document");
+                if (fileName === null || fileName.trim() === "") {
+                    console.log("Export operation cancelled by user or empty filename.");
+                    return; // Abort if user cancels or enters empty filename
+                }
+                // Ensure .html extension
+                if (!fileName.toLowerCase().endsWith('.html')) {
+                    fileName += '.html';
+                }
+
                 const content = window.quill.root.innerHTML; // Get HTML content
                 const blob = new Blob([content], { type: 'text/html' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = 'document.html'; // Default filename
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(a.href); // Clean up
-                console.log("Document exported as document.html");
+                console.log(`Document exported as ${fileName}`);
             } else {
                 console.error("Quill editor not found for export operation.");
             }
@@ -105,16 +115,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (saveDvkBtn) {
         saveDvkBtn.addEventListener('click', () => {
             if (window.quill) {
+                let fileName = window.prompt("Enter filename for .dvk (e.g., myDocument):", "document");
+                if (fileName === null || fileName.trim() === "") {
+                    console.log("Save operation cancelled by user or empty filename.");
+                    return; // Abort if user cancels or enters empty filename
+                }
+                // Ensure .dvk extension
+                if (!fileName.toLowerCase().endsWith('.dvk')) {
+                    fileName += '.dvk';
+                }
+
                 const content = window.quill.root.innerHTML; // Get HTML content
                 const blob = new Blob([content], { type: 'text/html' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = 'document.dvk'; // Default filename
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(a.href); // Clean up
-                console.log("Document saved as document.dvk");
+                console.log(`Document saved as ${fileName}`);
             } else {
                 console.error("Quill editor not found for save operation.");
             }
